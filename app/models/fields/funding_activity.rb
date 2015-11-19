@@ -17,7 +17,7 @@ class FundingActivity
   rdf_type rdf_type RDF::PROV.Activity
   map_predicates do |map|
     map.wasAssociatedWith(:in => RDF::PROV)
-    map.hasFundingAward(:in => RDF::ORA)
+    map.hasFundingAward(:in => RDF::Ora)
     map.funder(:to => "qualifiedAssociation", :in => RDF::PROV, class_name:"QualifiedFundingAssociation")
   end
   accepts_nested_attributes_for :funder
@@ -60,7 +60,7 @@ class QualifiedFundingAssociation
     map.role(:to => "hadRole", :in => RDF::PROV)
     map.funds(:to => "isFundingAgencyFor", :in => RDF::FRAPO)
     map.awards(:to => "awards", :in => RDF::FRAPO, class_name:"FundingAward")
-    map.annotation(:in => RDF::ORA)
+    map.annotation(:in => RDF::Ora)
   end
   accepts_nested_attributes_for :awards, :agent
   def persisted?

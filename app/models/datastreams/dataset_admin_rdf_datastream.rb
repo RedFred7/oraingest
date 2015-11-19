@@ -9,12 +9,12 @@ class DatasetAdminRdfDatastream < ActiveFedora::NtriplesRDFDatastream
 
   map_predicates do |map|
     # For internal relations
-    map.hasDataManagementPlan(:in => RDF::ORA)
-    map.hasAgreement(:in => RDF::ORA)
-    map.storageAgreement(:in => RDF::ORA, class_name:"AgreementDetails")
-    map.note(:to => "annotation", :in => RDF::ORA)
-    map.adminLocator(:to => "locator", :in => RDF::ORA)
-    map.adminDigitalSize(:to => "digitalSize", :in => RDF::ORA)
+    map.hasDataManagementPlan(:in => RDF::Ora)
+    map.hasAgreement(:in => RDF::Ora)
+    map.storageAgreement(:in => RDF::Ora, class_name:"AgreementDetails")
+    map.note(:to => "annotation", :in => RDF::Ora)
+    map.adminLocator(:to => "locator", :in => RDF::Ora)
+    map.adminDigitalSize(:to => "digitalSize", :in => RDF::Ora)
   end
   accepts_nested_attributes_for :storageAgreement
 

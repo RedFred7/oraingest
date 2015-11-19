@@ -224,13 +224,13 @@ class EmbargoInfo
   rdf_type RDF::PSO.PublicationStatus
   map_predicates do |map|
     #-- embargoStatus --
-    map.embargoStatus(:in => RDF::ORA)
+    map.embargoStatus(:in => RDF::Ora)
     #-- embargoDate --
     map.embargoDate(:to => "hasEmbargoDuration", :in => RDF::FABIO, class_name: "EmbargoDate")
     #-- embargoReason --
-    map.embargoReason(:in => RDF::ORA)
+    map.embargoReason(:in => RDF::Ora)
     #-- embargoRelease --
-    map.embargoRelease(:in => RDF::ORA)
+    map.embargoRelease(:in => RDF::Ora)
   end
   accepts_nested_attributes_for :embargoDate
 

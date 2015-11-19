@@ -3,8 +3,8 @@ class ThesisAdminRdfDatastream < ActiveFedora::NtriplesRDFDatastream
   attr_accessor :dispensationFromConsultation, :thirdPartyCopyright
 
   map_predicates do |map|
-    map.dispensationFromConsultation(:in => RDF::ORA)
-    map.hasThirdPartyCopyrightMaterial(:in => RDF::ORA)
+    map.dispensationFromConsultation(:in => RDF::Ora)
+    map.hasThirdPartyCopyrightMaterial(:in => RDF::Ora)
   end
 
   def persisted?

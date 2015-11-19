@@ -10,7 +10,7 @@ require 'builder'
 require 'nokogiri'
 
 
-module ORA
+module Ora
   class DataValidationError < RuntimeError
     def initialize(errors)
       if errors.is_a?(Array)

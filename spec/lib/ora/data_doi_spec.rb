@@ -1,6 +1,6 @@
 require 'rails_helper'
 require File.expand_path('lib/ora/data_doi', Rails.root)
-describe ORA::DataDoi do
+describe Ora::DataDoi do
   
   let(:username)     { 'Bob'}
   let(:password)     { 'something.long' }
@@ -19,7 +19,7 @@ describe ORA::DataDoi do
   end
   
   let(:data_doi) do 
-    ORA::DataDoi.new(
+    Ora::DataDoi.new(
           username: username,
           password: password,
           shoulder: shoulder,
@@ -57,7 +57,7 @@ describe ORA::DataDoi do
   
   describe '#valid_attribute?' do
     it 'should return true if attribute in REQUIRED_ATTRIBUTES' do
-      attr = ORA::DataDoi::REQUIRED_ATTRIBUTES.first
+      attr = Ora::DataDoi::REQUIRED_ATTRIBUTES.first
       expect(data_doi.valid_attribute?(attr)).to eq(true)
     end
     
@@ -148,7 +148,7 @@ describe ORA::DataDoi do
         payload.delete :title
         expect {
           data_doi.validate_required(payload)
-        }.to raise_error(ORA::DataValidationError)
+        }.to raise_error(Ora::DataValidationError)
       end
     end
     
@@ -157,7 +157,7 @@ describe ORA::DataDoi do
         payload[:title] = " "
         expect {
           data_doi.validate_required(payload)
-        }.to raise_error(ORA::DataValidationError)
+        }.to raise_error(Ora::DataValidationError)
       end
     end
     
@@ -176,7 +176,7 @@ describe ORA::DataDoi do
         payload[:identifier] = '10.foo'
         expect {
           data_doi.validate_xml(payload)
-        }.to raise_error(ORA::DataValidationError)
+        }.to raise_error(Ora::DataValidationError)
       end
     end
     

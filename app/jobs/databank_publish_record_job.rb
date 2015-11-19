@@ -8,7 +8,7 @@ class DatabankPublishRecordJob
     if model == "Article"
       return
     end
-    m = ORA::MigrateData.new(pid, datastreams, model, numberOfFiles)
+    m = Ora::MigrateData.new(pid, datastreams, model, numberOfFiles)
     m.migrate
   end
 

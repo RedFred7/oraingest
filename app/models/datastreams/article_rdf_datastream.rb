@@ -44,7 +44,7 @@ class ArticleRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.publicationStatus(:to => "DocumentStatus", :in => RDF::BIBO)
     # -- review status --
     #TODO: Check if this is used. May be replaced by one in publication activity
-    map.reviewStatus(:in => RDF::ORA)
+    map.reviewStatus(:in => RDF::Ora)
     # -- rights activity --
     map.license(:in => RDF::DC, class_name:"LicenseStatement")
     map.dateCopyrighted(:in => RDF::DC)
@@ -53,12 +53,12 @@ class ArticleRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.rightsActivity(:in => RDF::PROV, :to => "hadActivity", class_name:"RightsActivity")
     # -- creation activity --
     # TODO: link with Fedora person objects
-    map.creation(:to => "hadCreationActivity", :in => RDF::ORA, class_name:"CreationActivity")
+    map.creation(:to => "hadCreationActivity", :in => RDF::Ora, class_name:"CreationActivity")
     # -- funding activity --
     # TODO: Lookup and link with Fedora funder objects
     map.funding(:to => "isOutputOf", :in => RDF::FRAPO, class_name:"FundingActivity")
     #-- publication activity --
-    map.publication(:to => "hadPublicationActivity", :in => RDF::ORA, class_name:"PublicationActivity")
+    map.publication(:to => "hadPublicationActivity", :in => RDF::Ora, class_name:"PublicationActivity")
     # -- Commissioning body --
     # TODO: Nested attributes using Prov
     #-- source --

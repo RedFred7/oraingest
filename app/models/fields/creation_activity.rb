@@ -100,7 +100,7 @@ class CreationAssociation
     map.type(:in => RDF::DC)
     map.name(:to => "n", :in => RDF::VCARD)
     map.email(:to => "hasEmail", :in => RDF::VCARD)
-    map.affiliation(:in => RDF::ORA, class_name:"Affiliation")
+    map.affiliation(:in => RDF::Ora, class_name:"Affiliation")
     map.sameAs(:in => RDF::OWL)
   end
   accepts_nested_attributes_for :affiliation

@@ -16,17 +16,17 @@ class DatasetAgreementRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.identifier(:in => RDF::DC)
     map.title(:in => RDF::DC)
     map.type(:in => RDF::DC)
-    map.agreementType(:in => RDF::ORA)
-    map.annotation(:in => RDF::ORA)
-    map.digitalSizeAllocated(:in => RDF::ORA)
-    map.dataStorageSilo(:in => RDF::ORA)
-    map.status(:to => "agreementStatus", :in => RDF::ORA)
+    map.agreementType(:in => RDF::Ora)
+    map.annotation(:in => RDF::Ora)
+    map.digitalSizeAllocated(:in => RDF::Ora)
+    map.dataStorageSilo(:in => RDF::Ora)
+    map.status(:to => "agreementStatus", :in => RDF::Ora)
     map.contributor(:in => RDF::DC)
     map.references(:in => RDF::DC)
     map.valid(:in => RDF::DC, class_name:"DateDuration")
-    map.creation(:to => "hadCreationActivity", :in => RDF::ORA, class_name:"CreationActivity")
-    map.titularActivity(:to => "hadTitularActivity", :in => RDF::ORA, class_name:"TitularActivity")
-    map.invoice(:to => "hasInvoice", :in => RDF::ORA, class_name: "InvoiceDetails")
+    map.creation(:to => "hadCreationActivity", :in => RDF::Ora, class_name:"CreationActivity")
+    map.titularActivity(:to => "hadTitularActivity", :in => RDF::Ora, class_name:"TitularActivity")
+    map.invoice(:to => "hasInvoice", :in => RDF::Ora, class_name: "InvoiceDetails")
     map.funding(:to => "isOutputOf", :in => RDF::FRAPO, class_name:"FundingActivity")
   end
   accepts_nested_attributes_for :valid
@@ -91,8 +91,8 @@ class InvoiceDetails
     map.identifier(:in => RDF::DC)
     map.description(:in => RDF::DC)
     map.source(:in => RDF::DC)
-    map.monetaryValue(:in => RDF::ORA)
-    map.monetaryStatus(:in => RDF::ORA)
+    map.monetaryValue(:in => RDF::Ora)
+    map.monetaryStatus(:in => RDF::Ora)
   end
 
   def persisted?

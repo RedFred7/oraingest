@@ -8,10 +8,10 @@ class ArticleAdminRdfDatastream < ActiveFedora::NtriplesRDFDatastream
 
   map_predicates do |map|
     # For internal relations
-    map.oaStatus(:in => RDF::ORA)
-    map.apcPaid(:in => RDF::ORA)
-    map.oaReason(:in => RDF::ORA)
-    map.refException(:in => RDF::ORA)
+    map.oaStatus(:in => RDF::Ora)
+    map.apcPaid(:in => RDF::Ora)
+    map.oaReason(:in => RDF::Ora)
+    map.refException(:in => RDF::Ora)
   end
 
   def persisted?

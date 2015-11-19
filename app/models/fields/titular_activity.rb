@@ -95,10 +95,10 @@ class TitularAssociation
   include ActiveModel::Conversion
   attr_accessor :type, :name, :email, :affiliation, :sameAs
 
-  rdf_type rdf_type RDF::ORA.TitularAgent
+  rdf_type rdf_type RDF::Ora.TitularAgent
   map_predicates do |map|
     map.name(:to => "n", :in => RDF::VCARD)
-    map.affiliation(:in => RDF::ORA, class_name:"Affiliation")
+    map.affiliation(:in => RDF::Ora, class_name:"Affiliation")
     map.roleHeldBy(:to => 'isHeldBy', :in => RDF::PRO)
   end
   accepts_nested_attributes_for :affiliation

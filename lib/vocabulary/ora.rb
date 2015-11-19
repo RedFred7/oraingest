@@ -1,5 +1,5 @@
 module RDF
-  class ORA < RDF::Vocabulary("http://vocab.ox.ac.uk/ora#")
+  class Ora < RDF::Vocabulary("http://vocab.ox.ac.uk/ora#")
     property :affiliation
     property :annotation
     # copyright

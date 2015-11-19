@@ -282,7 +282,7 @@ class MetadataBuilder
         params[:rightsHolder] = []
       end
       model.creation[0].creator.each do |creator|
-        if creator.role.any? and creator.role.include?(RDF::ORA.copyrightHolder)
+        if creator.role.any? and creator.role.include?(RDF::Ora.copyrightHolder)
           params[:rightsHolder].push(creator.agent.first.id)
         end
       end

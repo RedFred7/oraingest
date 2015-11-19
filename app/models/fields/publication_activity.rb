@@ -19,7 +19,7 @@ class PublicationActivity
   map_predicates do |map|
     map.type(:in => RDF::DC)
     map.publicationStatus(:to => "DocumentStatus", :in => RDF::BIBO)
-    map.reviewStatus(:in => RDF::ORA)
+    map.reviewStatus(:in => RDF::Ora)
     map.hasDocument(:to => "generated", :in => RDF::PROV, class_name:"PublicationDocument")
     map.datePublished(:to => "generatedAtTime", :in => RDF::PROV)
     map.location(:to => "atLocation", :in => RDF::PROV)
@@ -87,7 +87,7 @@ class PublicationDocument
     map.identifier(:in => RDF::BIBO)
     map.doi(:in => RDF::BIBO)
     map.journal(:to => 'isPartOf', :in => RDF::DC, class_name:"PublicationJournal")
-    map.series(:to => 'isPartOfSeries', :in => RDF::ORA, class_name:"PublicationSeries")
+    map.series(:to => 'isPartOfSeries', :in => RDF::Ora, class_name:"PublicationSeries")
     map.uri(:in => RDF::BIBO)
   end
   accepts_nested_attributes_for :journal

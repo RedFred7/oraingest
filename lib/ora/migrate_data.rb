@@ -1,6 +1,6 @@
 require 'ora/databank'
 
-module ORA
+module Ora
   class MigrateData
   
     attr_accessor :dataset, :status, :msg, :silo

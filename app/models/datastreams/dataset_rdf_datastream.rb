@@ -45,15 +45,15 @@ class DatasetRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     #-- temporal coverage of data --
     map.temporal(:in => RDF::DC, class_name:"DateDuration")
     #-- temporal coverage of project --
-    map.dateCollected(:in => RDF::ORA, class_name:"DateDuration")
+    map.dateCollected(:in => RDF::Ora, class_name:"DateDuration")
     #-- location --
     map.spatial(:in => RDF::DC, class_name:"Location")
     #-- medium --
     map.medium(:in => RDF::DC)
     #-- data storage locator --
-    map.locator(:in => RDF::ORA)
+    map.locator(:in => RDF::Ora)
     #-- data size --
-    map.digitalSize(:in => RDF::ORA)
+    map.digitalSize(:in => RDF::Ora)
     #-- Format --
     map.format(:in => RDF::DC)
     #-- version --
@@ -66,12 +66,12 @@ class DatasetRdfDatastream < ActiveFedora::NtriplesRDFDatastream
     map.rightsActivity(:in => RDF::PROV, :to => "hadActivity", class_name:"RightsActivity")
     # -- creation activity --
     # TODO: link with Fedora person objects
-    map.creation(:to => "hadCreationActivity", :in => RDF::ORA, class_name:"CreationActivity")
+    map.creation(:to => "hadCreationActivity", :in => RDF::Ora, class_name:"CreationActivity")
     # -- funding activity --
     # TODO: Lookup and link with Fedora funder objects
     map.funding(:to => "isOutputOf", :in => RDF::FRAPO, class_name:"FundingActivity")
     #-- publication activity --
-    map.publication(:to => "hadPublicationActivity", :in => RDF::ORA, class_name:"PublicationActivity")
+    map.publication(:to => "hadPublicationActivity", :in => RDF::Ora, class_name:"PublicationActivity")
     #-- source --
     # TODO: Nested attributes of name, homepage and uri - one to many
 
