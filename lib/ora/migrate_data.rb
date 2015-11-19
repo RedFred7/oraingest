@@ -98,6 +98,7 @@ module Ora
         ext = ".ttl"
       end
       cont = @obj.datastreams[ds].content
+      FileUtils::mkdir_p(Sufia.config.tmp_file_dir) unless Dir.exist? Sufia.config.tmp_file_dir
       file = Tempfile.new([ ds, ext ], Sufia.config.tmp_file_dir)
       file.binmode
       file.write(cont)
