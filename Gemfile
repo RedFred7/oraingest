@@ -18,7 +18,7 @@ group :assets do
   gem 'coffee-rails', '~> 4.0.0'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', :platforms => :ruby  
+  gem 'therubyracer', :platforms => :ruby
 
 end
 
@@ -90,7 +90,9 @@ group :test do
   gem 'mock_redis'  # Used so redis does not need to be present during tests
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
+  gem 'minitest-rails'
   gem 'minitest-reporters'
+  gem 'selenium-webdriver'
 end
 
 gem 'god'
