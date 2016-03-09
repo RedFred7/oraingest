@@ -13,6 +13,8 @@ class ReviewingController < ApplicationController
 
   def index
 
+    # binding.pry
+
     @full_search = false
     backup_filter = Filter.new(:STATUS, :Claimed, :NOT)
     default_filter_1 = Filter.new(:STATUS, :Claimed)
@@ -71,13 +73,46 @@ class ReviewingController < ApplicationController
 
     end
 
+    # user is claiming/unclaiming items
+    if %w(on yes true).include? params[:claim]
+      usr_name = (Rails.env.production? ? current_user.first_name : current_user.email)
+
+      binding.pry
+      #get the solr doc to update
+      response = @@solr_connection.get 'select',
+        :params => {q: "id:#{params[:claim_id]}"}
+      unless response["response"]["docs"].size == 1
+        raise "Wrong number of documents to update!"
+      end
+      solr_doc_to_claim = response["response"]["docs"].first
+      #change fields to make it Claimed
+      solr_doc_to_claim["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, usr_name)  
+      solr_doc_to_claim["MediatedSubmission_status_ssim"] = Array.new(1, 'Claimed')
+      #update back to Solr
+      res = @@solr_connection.add solr_doc_to_claim
+      res = @@solr_connection.commit
+
+      if res['responseHeader']['status'] == 0
+        flash[:notice] = "Item #{params[:claim_id]} has been successfully claimed by #{usr_name}!."
+        get_solr_records( build_query(session[:review_dash_filters]) )
+      else
+      	flash[:error] = "Item #{params[:claim_id]} could not be claimed due to Solr update error!."
+      end
+      return
+    end
+
     full_query = params[:search] ?
       build_query(session[:review_dash_filters], " OR ")  :
       build_query(session[:review_dash_filters])
 
-    # binding.pry if params[:search]
-    response = solr_search(full_query,  params[:page] ? params[:page].to_i : 1)
+    get_solr_records(full_query)
 
+
+  end
+
+
+  def get_solr_records(query)
+    response = solr_search(query,  params[:page] ? params[:page].to_i : 1)
     @docs_found = response['response']['numFound']
 
     if @docs_found < 1
@@ -87,8 +122,8 @@ class ReviewingController < ApplicationController
       @docs_list = response['response']['docs']
     end
 
-
   end
+
 
 
   def solr_search(query, page = 1)
@@ -106,15 +141,15 @@ class ReviewingController < ApplicationController
 
 
   def full_text_search( search_term )
-    binding.pry
     joined_results = []
     Solrium.each do |nice_name, solr_name|
-      qs= "#{nice_name.to_s.downcase}=#{search_term}"
+      qs = "#{nice_name.to_s.downcase}=#{search_term}"
       rs = QueryStringSearch.new(@@solr_docs, qs).results
       joined_results.concat( rs ) if rs.size > 0
     end
     joined_results
   end
+
 
   # Builds a Solr query string from a list of Filter objects
   # Each filter is appended to the query string as a conjuncture (AND)
@@ -155,6 +190,16 @@ class ReviewingController < ApplicationController
   def restrict_access_to_reviewers
     unless can? :review, :all
       raise  CanCan::AccessDenied.new("You do not have permission to review submissions.", :review_submissions, current_user)
+    end
+  end
+
+
+  private
+
+  def find_doc(doc_id)
+    if @docs_list
+      idx = docs_list.find_index {|doc| doc['id'] == doc_id}
+      @docs_list[idx]
     end
   end
 
