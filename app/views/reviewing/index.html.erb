@@ -1,5 +1,6 @@
 <% @page_title = application_name + " Review Submissions" %>
-<h2 class="heading2">Fred dashboard</h2>
+<% name = (Rails.env.production? ? "#{current_user.first_name}'s" : current_user) %>
+<h2 class="heading2"><%= name %> Dashboard</h2>
 
 <% if @docs_found > 0 %>
 	<%= render 'search_review_dash' %>
