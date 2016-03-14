@@ -10,21 +10,8 @@ describe User do
   end
   
   describe '#display_name' do
-    let(:names) { {'firstname' => 'Foo', 'lastname' => 'Bar'} }
+    let(:names) { {'firstname' => 'Foo', 'lastname' => 'Bar', fullname: 'Foo Bar'} }
     
-    it 'with first and last names' do
-      expect(user.display_name(names)).to eq('Foo Bar')
-    end
-    
-    it 'with first name' do
-      names.delete('lastname')
-      expect(user.display_name(names)).to eq('Foo')
-    end
-    
-    it 'with last name' do
-      names.delete('firstname')
-      expect(user.display_name(names)).to eq('Bar')
-    end
     
     it 'without user_info' do
       expect(user.display_name).to eq(nil)
