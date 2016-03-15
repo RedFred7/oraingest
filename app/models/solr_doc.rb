@@ -41,7 +41,7 @@ class SolrDoc
   end  
 
   def status
-    @status ? @status.first : ""
+    @status ? @status.last : ""
   end
 
   def type
