@@ -27,7 +27,7 @@
 						<article class="review-article">
 							<%= render partial: 'article_content', locals: {item: item} %>
 							<%= render partial: 'dashboard_item_buttons', locals:
-							{id: item.id, add_claim_button: !item.is_it_claimed?} %>
+							{id: item.id, item_claimed: item.is_it_claimed?} %>
 						</article>
 					</tr>
 				<% end %>

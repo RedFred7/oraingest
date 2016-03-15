@@ -11,6 +11,13 @@ class ReviewingController < ApplicationController
   Filter = Struct.new(:facet, :value, :predicate)
   before_filter :restrict_access_to_reviewers
 
+
+  def restrict_access_to_reviewers
+    unless can? :review, :all
+      raise  CanCan::AccessDenied.new("You do not have permission to review submissions.", :review_submissions, current_user)
+    end
+  end
+
   def index
 
     # binding.pry
@@ -63,6 +70,7 @@ class ReviewingController < ApplicationController
     end
 
 
+    # user is doing full-text search
     if params[:search]
       @full_search = true
       session[:review_dash_filters].clear
@@ -74,29 +82,31 @@ class ReviewingController < ApplicationController
     end
 
     # user is claiming/unclaiming items
-    if %w(on yes true).include? params[:claim]
-      usr_name = (Rails.env.production? ? current_user.first_name : current_user.email)
+    if params[:claim]
+      usr_name = (Rails.env.production? ? current_user.full_name : current_user.email)
 
-      binding.pry
       #get the solr doc to update
       response = @@solr_connection.get 'select',
         :params => {q: "id:#{params[:claim_id]}"}
       unless response["response"]["docs"].size == 1
         raise "Wrong number of documents to update!"
       end
-      solr_doc_to_claim = response["response"]["docs"].first
-      #change fields to make it Claimed
-      solr_doc_to_claim["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, usr_name)  
-      solr_doc_to_claim["MediatedSubmission_status_ssim"] = Array.new(1, 'Claimed')
-      #update back to Solr
-      res = @@solr_connection.add solr_doc_to_claim
-      res = @@solr_connection.commit
 
-      if res['responseHeader']['status'] == 0
-        flash[:notice] = "Item #{params[:claim_id]} has been successfully claimed by #{usr_name}!."
-        get_solr_records( build_query(session[:review_dash_filters]) )
+
+      solr_doc = mark_doc_as_claimed(response["response"]["docs"].first, usr_name) if %w(on yes true).include? params[:claim]
+
+      solr_doc = mark_doc_as_unclaimed(response["response"]["docs"].first, usr_name) if %w(off no false).include? params[:claim]
+
+      #update back to Solr
+      if  update_solr_doc( solr_doc ) == 0 # success
+        if %w(on yes true).include? params[:claim]
+          flash[:notice] = "Item #{params[:claim_id]} has been successfully claimed by #{usr_name}!."
+          get_solr_records( build_query([] << default_filter_1 << default_filter_2) )
+        end
+        if %w(off no false).include? params[:claim]
+        end
       else
-      	flash[:error] = "Item #{params[:claim_id]} could not be claimed due to Solr update error!."
+        flash[:error] = "Item #{params[:claim_id]}- Claim state could not be changed due to Solr update error!"
       end
       return
     end
@@ -111,6 +121,14 @@ class ReviewingController < ApplicationController
   end
 
 
+  private
+
+  # Gets the solr query executed and sets two instance variables:
+  # One for all found documents (@docs_list) and one for all
+  # relevant facets (@facets)
+  #
+  # @param query [?] The Solr query string
+  # @return N/A
   def get_solr_records(query)
     response = solr_search(query,  params[:page] ? params[:page].to_i : 1)
     @docs_found = response['response']['numFound']
@@ -125,7 +143,8 @@ class ReviewingController < ApplicationController
   end
 
 
-
+  # Executes the solr query
+  # @return N/A
   def solr_search(query, page = 1)
     logger.info "Solr search query: #{query}"
 
@@ -139,6 +158,49 @@ class ReviewingController < ApplicationController
 
   end
 
+
+  # Ensures the right solr metadata fields are created and populated
+  # in order for the document to be claimed by the current user
+  #
+  # @param solr_doc [Hash] document metadata retrieved from Solr
+  # @param user [String] The current user's full name or email
+  # @return String the modified solr document
+  def mark_doc_as_claimed(solr_doc, user)
+    # make sure relevant fields are there
+    solr_doc["MediatedSubmission_current_reviewer_id_ssim"] = [] unless solr_doc["MediatedSubmission_current_reviewer_id_ssim"]
+    solr_doc["MediatedSubmission_status_ssim"] = [] unless solr_doc["MediatedSubmission_status_ssim"]
+    solr_doc["MediatedSubmission_all_reviewer_ids_ssim"] = [] unless solr_doc["MediatedSubmission_all_reviewer_ids_ssim"]
+    # now set the right values
+    solr_doc["MediatedSubmission_all_reviewer_ids_ssim"].push user
+    solr_doc["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, user)
+    solr_doc["MediatedSubmission_status_ssim"].push Sufia.config.claimed_status
+    solr_doc
+  end
+
+
+  # Ensures the right solr metadata fields are created and populated
+  # in order for the document to be claimed by the current user
+  #
+  # @param solr_doc [Hash] document metadata retrieved from Solr
+  # @param user [String] The current user's full name or email
+  # @return String the modified solr document
+  def mark_doc_as_unclaimed
+  end  
+
+
+  # Updates the solr document. Update is a 2-stage process, add
+  # + commit
+  #
+  # @param solr_doc [Hash] Solr document to be updated
+  # @return Integer 0 if update was successful
+  # @note Solr's #add and #commit methods will raise exceptions
+  # on failure
+  def update_solr_doc(solr_doc)
+    res = @@solr_connection.add solr_doc
+    res = @@solr_connection.commit
+    res['responseHeader']['status']
+
+  end
 
   def full_text_search( search_term )
     joined_results = []
@@ -187,14 +249,8 @@ class ReviewingController < ApplicationController
     q_string
   end
 
-  def restrict_access_to_reviewers
-    unless can? :review, :all
-      raise  CanCan::AccessDenied.new("You do not have permission to review submissions.", :review_submissions, current_user)
-    end
-  end
 
 
-  private
 
   def find_doc(doc_id)
     if @docs_list
