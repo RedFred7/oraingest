@@ -3,10 +3,20 @@ reviewer:
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password') %>
   sign_in_count: 10
 
+dashboard:
+  email: dashboard@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password') %>
+  sign_in_count: 10
+
 archivist:
   email: archivist1@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password') %>  
   sign_in_count: 10  
+
+non_reviewer:
+  email: archivist2@example.com
+  encrypted_password: <%= Devise::Encryptor.digest(User, 'password') %>  
+  sign_in_count: 10    
 
 researcher:
   email: researcher1@example.com
