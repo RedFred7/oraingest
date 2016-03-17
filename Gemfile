@@ -93,6 +93,7 @@ group :test do
   gem 'minitest-rails'
   gem 'minitest-reporters'
   gem 'selenium-webdriver'
+  gem 'rails-perftest'
 end
 
 gem 'god'
