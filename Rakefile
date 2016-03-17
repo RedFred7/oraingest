@@ -15,7 +15,7 @@ namespace :test do
 		end
 	end
 
-	Rake::TestTask.new(all: [:spec, 'test:unit'])
+	Rake::TestTask.new(all: [:spec, 'test:unit', 'test:integration'])
 end
 
 
