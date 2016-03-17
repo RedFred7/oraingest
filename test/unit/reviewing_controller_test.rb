@@ -2,6 +2,9 @@ require 'test_helper'
 
 class ReviewingControllerTest < ActionController::TestCase
 
+
+  SimpleCov.command_name 'test:unit'
+
   Filter = Struct.new(:facet, :value, :predicate)
 
   setup do

@@ -20,8 +20,6 @@ class ReviewingController < ApplicationController
 
   def index
 
-    # binding.pry
-
     @full_search = false
     backup_filter = Filter.new(:STATUS, :Claimed, :NOT)
     default_filter_1 = Filter.new(:STATUS, :Claimed)
@@ -91,7 +89,6 @@ class ReviewingController < ApplicationController
       unless response["response"]["docs"].size == 1
         raise "Wrong number of documents to update!"
       end
-
 
       solr_doc = mark_doc_as_claimed(response["response"]["docs"].first, usr_name) if %w(on yes true).include? params[:claim]
 

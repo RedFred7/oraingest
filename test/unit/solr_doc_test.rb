@@ -4,15 +4,15 @@ class SolrDocTest < ActiveSupport::TestCase
 
   SOLR_DOCS_FIXTURE_SIZE = 111
 
-  #load fixtures file containing 1 solr doc
-  file1 ||= File.open("test/fixtures/solr_doc", "rb")
+  #load data file containing 1 solr doc
+  file1 ||= File.open("test/data/solr_doc", "rb")
   solr_test_data = eval(file1.read)
   file1.close
   raise TypeError, "solr_test_data isn't a Hash" unless solr_test_data.is_a? Hash
   @@solr_doc ||= SolrDoc.new(solr_test_data)
 
-  #load fixtures file containing 111 solr docs
-  file2 ||= File.open("test/fixtures/solr_data", "rb")
+  #load data file containing 111 solr docs
+  file2 ||= File.open("test/data/solr_data", "rb")
   solr_data = eval(file2.read)
   file2.close
   raise TypeError, "solr_data isn't a Hash" unless solr_data.is_a? Hash
