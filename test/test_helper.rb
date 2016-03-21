@@ -16,10 +16,6 @@ Minitest::Reporters.use!(
 )
 
 
-class ActionController::TestCase
-  include Devise::TestHelpers
-end
-
 
 class ActiveSupport::TestCase
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
@@ -31,13 +27,20 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 end
 
-# class ActionDispatch::IntegrationTest
-#   include Capybara::DSL
-# end
+
+class FunctionalTest < ActionController::TestCase
+  include Devise::TestHelpers
+
+  setup do
+    sign_in users(:reviewer)
+  end
+
+  teardown do
+  	sign_out users(:reviewer)
+  end
+end
 
 # Inherits from ActionDispatch::IntegrationTest so it gets a few goodies like path helpers
-
-
 class CapybaraTest <  ActionDispatch::IntegrationTest
   include Capybara::DSL
   include Warden::Test::Helpers

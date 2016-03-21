@@ -21,7 +21,6 @@ class CapybaraTest
 
   test "reviewer can claim a draft item" do
   	visit '/dash'
-  	# search_title_url = '/dash?search=Elton+Archive+Arctic+expedition'
   	fill_in('dash_search', :with => 'Elton+Archive+Arctic+expedition') 
   	click_button('dash_submit')
     assert_equal page.has_text?("1 Items found"), true
