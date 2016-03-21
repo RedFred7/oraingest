@@ -12,16 +12,18 @@ class CapybaraTest
 
 
   test "reviewer can access review dashboard" do
-  	unclaimed_url = '/dash?apply_filter%5B%5D%5Bfacet%5D=STATUS&apply_filter%5B%5D%5Bpredicate%5D=NOT&apply_filter%5B%5D%5Bvalue%5D=Claimed'
     visit '/dash'
+    click_link('Show all items')
     assert_equal page.has_text?("#{@user.email} Dashboard"), true
-    # assert_equal page.has_text?("3 Items found"), true
+    assert_equal page.has_text?("3 Items found"), true
   end
 
 
   test "reviewer can claim a draft item" do
-  	search_title_url = '/dash?search=Elton+Archive+Arctic+expedition'
-    visit search_title_url
+  	visit '/dash'
+  	# search_title_url = '/dash?search=Elton+Archive+Arctic+expedition'
+  	fill_in('dash_search', :with => 'Elton+Archive+Arctic+expedition') 
+  	click_button('dash_submit')
     assert_equal page.has_text?("1 Items found"), true
     click_link('claim_item_btn')
     assert_equal page.has_selector?('span.tag.tag-claimed'), true
