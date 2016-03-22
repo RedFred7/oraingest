@@ -1,12 +1,14 @@
 require "test_helper"
+require "lib/data_generator"
 
 
 class CapybaraTest
+  extend DataGenerator
 
   SimpleCov.command_name "test:integration"
 
 
-  create_solr_test_data
+  delete_solr_test_data and create_solr_test_data
 
   MiniTest::Unit.after_tests {delete_solr_test_data}
 
@@ -20,9 +22,9 @@ class CapybaraTest
 
 
   test "reviewer can claim a draft item" do
-  	visit '/dash'
-  	fill_in('dash_search', :with => 'Elton+Archive+Arctic+expedition') 
-  	click_button('dash_submit')
+    visit '/dash'
+    fill_in('dash_search', :with => 'Elton+Archive+Arctic+expedition')
+    click_button('dash_submit')
     assert_equal page.has_text?("1 Items found"), true
     click_link('claim_item_btn')
     assert_equal page.has_selector?('span.tag.tag-claimed'), true
@@ -30,16 +32,6 @@ class CapybaraTest
   end
 
 
-
-
-  # test "non-reviewers can't access review dashboard" do
-  #   non_reviewing_user = users(:non_reviewer)
-  #   login_as non_reviewing_user
-  #   visit '/dash'
-  #   assert_equal page.has_text?("You do not have permission to review submissions"), true
-  #   # assert_raises(CanCan::AccessDenied){visit '/dash'}
-  #   logout
-  # end
 
 
 
