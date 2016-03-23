@@ -93,6 +93,8 @@ group :test do
   gem 'minitest-rails'
   gem 'minitest-reporters'
   gem 'selenium-webdriver'
+  gem 'faker'
+  gem 'ruby-prof'
   gem 'rails-perftest'
 end
 
