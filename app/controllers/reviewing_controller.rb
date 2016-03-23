@@ -182,6 +182,11 @@ class ReviewingController < ApplicationController
   # @param user [String] The current user's full name or email
   # @return String the modified solr document
   def mark_doc_as_unclaimed
+  	previous_reviewer = solr_doc["MediatedSubmission_all_reviewer_ids_ssim"][-2]
+  	previous_status = solr_doc["MediatedSubmission_status_ssim"][-2]  	
+  	solr_doc["MediatedSubmission_all_reviewer_ids_ssim"].push previous_reviewer
+    solr_doc["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, previous_reviewer)  
+	solr_doc["MediatedSubmission_status_ssim"].push previous_status
   end  
 
 
