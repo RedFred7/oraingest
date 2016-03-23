@@ -5,7 +5,9 @@ require "lib/data_generator"
 class ReviewingControllerTest < FunctionalTest
   extend DataGenerator
 
-  delete_solr_test_data and create_solr_test_data
+
+  NO_OF_TEST_DATA_ITEMS = 3
+  delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
 
   MiniTest::Unit.after_tests {delete_solr_test_data}
 
@@ -34,11 +36,24 @@ class ReviewingControllerTest < FunctionalTest
   end
 
 
-  test "gets all unclaimed items" do
-  	filter = [{facet: "STATUS",predicate: "NOT",value: "Claimed"}]
+  test "it gets all unclaimed items" do
+    filter = [{facet: "STATUS",predicate: "NOT",value: "Claimed"}]
     get :index, {apply_filter: filter}
-	assert_equal  3, assigns[:docs_found]
+    assert_equal  NO_OF_TEST_DATA_ITEMS, assigns[:docs_found]
   end
 
+  test "an item is claimed" do
+  	item_to_claim = ReviewingControllerTest.test_data[1]
+
+    if ReviewingControllerTest.claim_an_item( item_to_claim, @controller.current_user )
+      filter = [{facet: "STATUS",value: "Claimed"},{facet: "CURRENT_REVIEWER",value: "#{@controller.current_user}"}]
+
+      get :index, {apply_filter: filter}
+      assert_equal 1, assigns[:docs_found]
+
+    else
+      flunk "Failed to claim an item!"
+    end
+  end
 
 end

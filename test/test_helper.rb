@@ -28,6 +28,7 @@ class ActiveSupport::TestCase
 end
 
 
+
 class FunctionalTest < ActionController::TestCase
   include Devise::TestHelpers
 
