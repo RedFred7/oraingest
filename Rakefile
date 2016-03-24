@@ -17,7 +17,6 @@ namespace :test do
 
 	Rake::TestTask.new(all: [:spec, 'test:unit', 'test:functional', 'test:integration' ])
 
-	Rake::TestTask.new(travis: [:spec, 'test:unit', 'test:functional'])	
 
 	desc 'Create solr test data'
 	task :seed_solr, [:how_many_items] => :environment do |t, args|
