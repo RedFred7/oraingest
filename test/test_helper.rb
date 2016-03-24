@@ -31,13 +31,13 @@ end
 
 class FunctionalTest < ActionController::TestCase
   include Devise::TestHelpers
-
+  Filter = Struct.new(:facet, :value, :predicate)
   setup do
     sign_in users(:reviewer)
   end
 
   teardown do
-  	sign_out users(:reviewer)
+    sign_out users(:reviewer)
   end
 end
 

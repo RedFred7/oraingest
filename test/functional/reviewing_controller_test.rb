@@ -43,7 +43,7 @@ class ReviewingControllerTest < FunctionalTest
   end
 
   test "an item is claimed" do
-  	item_to_claim = ReviewingControllerTest.test_data[1]
+    item_to_claim = ReviewingControllerTest.test_data[1]
 
     if ReviewingControllerTest.claim_an_item( item_to_claim, @controller.current_user )
       filter = [{facet: "STATUS",value: "Claimed"},{facet: "CURRENT_REVIEWER",value: "#{@controller.current_user}"}]
@@ -54,6 +54,23 @@ class ReviewingControllerTest < FunctionalTest
     else
       flunk "Failed to claim an item!"
     end
+  end
+
+
+  test "build query - builds default search query" do
+    result = "NOT #{SolrFacets.lookup(:STATUS)}:Claimed"
+    filter_list = Array.new(1, Filter.new(:STATUS, :Claimed, :NOT))
+    assert_equal result, @controller.send(:build_query, filter_list)
+  end
+
+
+
+  test "build query - builds backup search query" do
+    result = "#{SolrFacets.lookup(:STATUS)}:Claimed AND #{SolrFacets.lookup(:CURRENT_REVIEWER)}:Joe+Bloggs"
+    filter_list = []
+    filter_list << Filter.new(:STATUS, :Claimed)
+    filter_list << Filter.new(:CURRENT_REVIEWER, 'Joe Bloggs')
+    assert_equal result, @controller.send(:build_query, filter_list)
   end
 
 end
