@@ -83,16 +83,18 @@ class ReviewingController < ApplicationController
     if params[:claim]
       usr_name = (Rails.env.production? ? current_user.full_name : current_user.email)
 
-      #get the solr doc to update
+
+      #get the solr doc we want to update
       response = @@solr_connection.get 'select',
         :params => {q: "id:#{params[:claim_id]}"}
       unless response["response"]["docs"].size == 1
         raise "Wrong number of documents to update!"
       end
 
+
       solr_doc = mark_doc_as_claimed(response["response"]["docs"].first, usr_name) if %w(on yes true).include? params[:claim]
 
-      solr_doc = mark_doc_as_unclaimed(response["response"]["docs"].first, usr_name) if %w(off no false).include? params[:claim]
+      solr_doc = mark_doc_as_unclaimed(response["response"]["docs"].first) if %w(off no false).include? params[:claim]
 
       #update back to Solr
       if  update_solr_doc( solr_doc ) == 0 # success
@@ -101,6 +103,8 @@ class ReviewingController < ApplicationController
           get_solr_records( build_query([] << default_filter_1 << default_filter_2) )
         end
         if %w(off no false).include? params[:claim]
+          flash[:notice] = "Item #{params[:claim_id]} has been successfully un-claimed by #{usr_name}!."
+          get_solr_records( build_query([] << default_filter_1 << default_filter_2) )
         end
       else
         flash[:error] = "Item #{params[:claim_id]}- Claim state could not be changed due to Solr update error!"
@@ -181,13 +185,14 @@ class ReviewingController < ApplicationController
   # @param solr_doc [Hash] document metadata retrieved from Solr
   # @param user [String] The current user's full name or email
   # @return String the modified solr document
-  def mark_doc_as_unclaimed
-  	previous_reviewer = solr_doc["MediatedSubmission_all_reviewer_ids_ssim"][-2]
-  	previous_status = solr_doc["MediatedSubmission_status_ssim"][-2]  	
-  	solr_doc["MediatedSubmission_all_reviewer_ids_ssim"].push previous_reviewer
-    solr_doc["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, previous_reviewer)  
-	solr_doc["MediatedSubmission_status_ssim"].push previous_status
-  end  
+  def mark_doc_as_unclaimed(solr_doc)
+    previous_reviewer = solr_doc["MediatedSubmission_all_reviewer_ids_ssim"][-2]
+    previous_status = solr_doc["MediatedSubmission_status_ssim"][-2]
+    solr_doc["MediatedSubmission_all_reviewer_ids_ssim"].push previous_reviewer
+    solr_doc["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, previous_reviewer)
+    solr_doc["MediatedSubmission_status_ssim"].push previous_status
+    solr_doc
+  end
 
 
   # Updates the solr document. Update is a 2-stage process, add
