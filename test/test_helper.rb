@@ -7,6 +7,7 @@ require 'simplecov'
 require 'coveralls'
 # require 'webmock/minitest'
 require "minitest/pride"
+require "lib/data_generator"
 
 require 'minitest/reporters'
 Minitest::Reporters.use!(
@@ -31,13 +32,19 @@ end
 
 class FunctionalTest < ActionController::TestCase
   include Devise::TestHelpers
+  
   Filter = Struct.new(:facet, :value, :predicate)
+
+  NO_OF_TEST_DATA_ITEMS = 3
   setup do
     sign_in users(:reviewer)
+    delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
+
   end
 
   teardown do
     sign_out users(:reviewer)
+    delete_solr_test_data
   end
 end
 
@@ -48,14 +55,18 @@ class CapybaraTest <  ActionDispatch::IntegrationTest
   Warden.test_mode!
 
 
+  NO_OF_TEST_DATA_ITEMS = 4
+
   setup do
     Capybara.current_driver = :selenium
     @user = users(:dashboard)
+    delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
     login_as @user
   end
 
   teardown do
     logout
+    delete_solr_test_data
     Warden.test_reset!
   end
 
