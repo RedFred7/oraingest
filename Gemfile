@@ -83,6 +83,7 @@ group :development do
   gem 'binding_of_caller' #Retrieve the binding of a method's caller
   gem 'travis' #for Travis-CI cli integration
   gem 'htmlbeautifier' #allows beautifying ERB files
+  gem 'm' #enables individual test runs
 end
 
 group :test do
