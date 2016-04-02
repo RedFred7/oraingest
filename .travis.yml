@@ -24,5 +24,3 @@ script:
   - bundle exec rake ora:travis:build
   - bundle exec rake test:test_with_coveralls
   
-after_success:
-  - coveralls
