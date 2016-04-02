@@ -1,6 +1,6 @@
 class DashboardItem
 
-  attr_reader :title, :abstract, :creator, :status, :type, :depositor,
+  attr_reader :title, :abstract, :creator, :type, :status, :depositor,
     :reviewer, :date_published, :date_accepted, :id
 
   def initialize(solr_doc)
@@ -17,7 +17,7 @@ class DashboardItem
   end
 
   def is_it_claimed?
-    self.status == 'Claimed'
+    self.last_status == 'Claimed'
   end
 
 
@@ -46,7 +46,9 @@ class DashboardItem
   end
 
 
-
+  def last_status
+    @status ? @status.last : ""
+  end
 
   private
 
