@@ -32,7 +32,7 @@ end
 
 class FunctionalTest < ActionController::TestCase
   include Devise::TestHelpers
-  
+
   Filter = Struct.new(:facet, :value, :predicate)
 
   NO_OF_TEST_DATA_ITEMS = 3
@@ -54,10 +54,12 @@ class CapybaraTest <  ActionDispatch::IntegrationTest
   include Warden::Test::Helpers
   Warden.test_mode!
 
+  # Capybara.server_port = 3001
 
   NO_OF_TEST_DATA_ITEMS = 4
 
   setup do
+    # Capybara.current_driver = :rack_test
     Capybara.current_driver = :selenium
     @user = users(:dashboard)
     delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)

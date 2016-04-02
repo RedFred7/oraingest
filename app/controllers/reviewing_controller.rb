@@ -91,10 +91,11 @@ class ReviewingController < ApplicationController
         raise "Wrong number of documents to update!"
       end
 
+      solr_item_to_update = SolrDoc.new(response["response"]["docs"].first)
 
-      solr_doc = mark_doc_as_claimed(response["response"]["docs"].first, usr_name) if %w(on yes true).include? params[:claim]
+      solr_doc = mark_doc_as_claimed(solr_item_to_update, usr_name) if %w(on yes true).include? params[:claim]
 
-      solr_doc = mark_doc_as_unclaimed(response["response"]["docs"].first) if %w(off no false).include? params[:claim]
+      solr_doc = mark_doc_as_unclaimed(solr_item_to_update) if %w(off no false).include? params[:claim]
 
       #update back to Solr
       if  update_solr_doc( solr_doc ) == 0 # success
@@ -163,34 +164,29 @@ class ReviewingController < ApplicationController
   # Ensures the right solr metadata fields are created and populated
   # in order for the document to be claimed by the current user
   #
-  # @param solr_doc [Hash] document metadata retrieved from Solr
+  # @param solr_doc [SolrDoc] document metadata retrieved from Solr
   # @param user [String] The current user's full name or email
   # @return String the modified solr document
   def mark_doc_as_claimed(solr_doc, user)
-    # make sure relevant fields are there
-    solr_doc["MediatedSubmission_current_reviewer_id_ssim"] = [] unless solr_doc["MediatedSubmission_current_reviewer_id_ssim"]
-    solr_doc["MediatedSubmission_status_ssim"] = [] unless solr_doc["MediatedSubmission_status_ssim"]
-    solr_doc["MediatedSubmission_all_reviewer_ids_ssim"] = [] unless solr_doc["MediatedSubmission_all_reviewer_ids_ssim"]
-    # now set the right values
-    solr_doc["MediatedSubmission_all_reviewer_ids_ssim"].push user
-    solr_doc["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, user)
-    solr_doc["MediatedSubmission_status_ssim"].push Sufia.config.claimed_status
+    solr_doc.all_reviewers.push user
+    solr_doc.current_reviewer = Array.new(1, user)
+    solr_doc.status.push Sufia.config.claimed_status
     solr_doc
+
   end
 
 
   # Ensures the right solr metadata fields are created and populated
   # in order for the document to be claimed by the current user
   #
-  # @param solr_doc [Hash] document metadata retrieved from Solr
-  # @param user [String] The current user's full name or email
+  # @param solr_doc [SolrDoc] document metadata retrieved from Solr
   # @return String the modified solr document
   def mark_doc_as_unclaimed(solr_doc)
-    previous_reviewer = solr_doc["MediatedSubmission_all_reviewer_ids_ssim"][-2]
-    previous_status = solr_doc["MediatedSubmission_status_ssim"][-2]
-    solr_doc["MediatedSubmission_all_reviewer_ids_ssim"].push previous_reviewer
-    solr_doc["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, previous_reviewer)
-    solr_doc["MediatedSubmission_status_ssim"].push previous_status
+    previous_reviewer = solr_doc.all_reviewers[-2]
+    previous_status = solr_doc.status[-2]
+    solr_doc.all_reviewers.push previous_reviewer
+    solr_doc.current_reviewer = Array.new(1, previous_reviewer)
+    solr_doc.status.push previous_status
     solr_doc
   end
 
@@ -198,12 +194,12 @@ class ReviewingController < ApplicationController
   # Updates the solr document. Update is a 2-stage process, add
   # + commit
   #
-  # @param solr_doc [Hash] Solr document to be updated
+  # @param solr_doc [SolrDoc] Solr document to be updated
   # @return Integer 0 if update was successful
   # @note Solr's #add and #commit methods will raise exceptions
   # on failure
   def update_solr_doc(solr_doc)
-    res = @@solr_connection.add solr_doc
+    res = @@solr_connection.add solr_doc.to_hash
     res = @@solr_connection.commit
     res['responseHeader']['status']
 
