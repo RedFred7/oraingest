@@ -17,7 +17,8 @@ class SolrDocTest < ActiveSupport::TestCase
                     :MODEL,
                     :CONTRIBUTOR,
                     :KEYWORD,
-                    :PUBLISHER]
+                    :PUBLISHER,
+                    :ALL_REVIEWERS] 
 
 
   @@SOLR_FIELDS = ["id",
@@ -35,7 +36,8 @@ class SolrDocTest < ActiveSupport::TestCase
                    "active_fedora_model_ssi",
                    "desc_metadata__contributor_tesim",
                    "desc_metadata__keyword_sim",
-                   "desc_metadata__publisher_sim"]
+                   "desc_metadata__publisher_sim",
+                   "MediatedSubmission_all_reviewer_ids_ssim"]
 
   test "can access Solr attributes" do
     assert_equal  @@HUMAN_FIELDS, Solrium.attributes

@@ -67,4 +67,5 @@ module Solrium
   self.add_attr :CONTRIBUTOR, "desc_metadata__contributor_tesim"
   self.add_attr :KEYWORD, "desc_metadata__keyword_sim"
   self.add_attr :PUBLISHER, "desc_metadata__publisher_sim"
+  self.add_attr :ALL_REVIEWERS, "MediatedSubmission_all_reviewer_ids_ssim"
 end

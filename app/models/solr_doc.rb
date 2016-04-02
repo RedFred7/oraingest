@@ -4,10 +4,12 @@ class SolrDoc
   # any instance variables we want to expose to the world as-is, without
   # any manipulation, go here
   attr_reader :id
+  attr_accessor :all_reviewers, :current_reviewer, :status
 
 
-  # constructs a DashboardItem object based on a SolrResponse document.
-  # Reads the properties defined in Solrium module.
+  # constructs a SolrItem based on a SolrResponse document.
+  # Reads the properties defined in Solrium module and -for each- sets
+  # instance variables and accessor methods
   #
   # @param solr_response_item [SolrResponse] the hash-like representation
   # of a Solr document
@@ -17,9 +19,21 @@ class SolrDoc
     end
   end
 
+  def to_hash
+    hash = {}
+    instance_variables.each do |var|
+    	# binding.pry
+      var_name = var.to_s.delete("@")
+      key = Solrium.lookup(var_name)
+      hash[key] = (instance_variable_get(var) || Array.new)
+    end
+    hash
+  end
+
+
 
   def is_it_claimed?
-    self.status == 'Claimed'
+    self.last_status == 'Claimed'
   end
 
   # define explicit getters for instance variables we want to refine
@@ -38,9 +52,9 @@ class SolrDoc
 
   def contributor
     @contributor ? @contributor.join(',') : ""
-  end  
+  end
 
-  def status
+  def last_status
     @status ? @status.last : ""
   end
 
@@ -55,6 +69,7 @@ class SolrDoc
   def current_reviewer
     @current_reviewer ? @current_reviewer.first : ""
   end
+
 
   def date_published
     @date_published ? @date_published.first : ""

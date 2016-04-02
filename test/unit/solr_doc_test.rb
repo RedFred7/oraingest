@@ -29,7 +29,7 @@ class SolrDocTest < ActiveSupport::TestCase
 
 
   test "Status attribute set correctly" do
-    assert_equal 'Draft', @@solr_doc.status
+    assert_equal 'Draft', @@solr_doc.status.first
   end
 
   test "Title attribute set correctly" do
@@ -63,6 +63,8 @@ class SolrDocTest < ActiveSupport::TestCase
   test "Date Accepted attribute set correctly" do
     assert_equal '10/03/2015', @@solr_doc.date_accepted
   end
+
+  'ted@bodleian.ox.ac.uk'
 
   test "Subject attribute set correctly" do
     assert_includes @@solr_doc.subject, 'Religion'
