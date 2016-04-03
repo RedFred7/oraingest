@@ -22,7 +22,6 @@ class SolrDoc
   def to_hash
     hash = {}
     instance_variables.each do |var|
-    	# binding.pry
       var_name = var.to_s.delete("@")
       key = Solrium.lookup(var_name)
       hash[key] = (instance_variable_get(var) || Array.new)
@@ -30,10 +29,16 @@ class SolrDoc
     hash
   end
 
+  def allowed_transitions
+  	Sufia.config.next_workflow_status[self.last_status]
+  end
 
+  def transition_allowed?(new_status)
+    allowed_transitions.include?  new_status
+  end
 
   def is_it_claimed?
-    self.last_status == 'Claimed'
+    self.last_status == Sufia.config.claimed_status
   end
 
   # define explicit getters for instance variables we want to refine
