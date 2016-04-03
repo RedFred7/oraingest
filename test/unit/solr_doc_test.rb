@@ -64,14 +64,31 @@ class SolrDocTest < ActiveSupport::TestCase
     assert_equal '10/03/2015', @@solr_doc.date_accepted
   end
 
-  'ted@bodleian.ox.ac.uk'
+  
+  test "All Reviewers attribute set correctly" do
+    assert_equal ['ted@bodleian.ox.ac.uk'], @@solr_doc.all_reviewers
+  end
 
   test "Subject attribute set correctly" do
     assert_includes @@solr_doc.subject, 'Religion'
     assert_includes @@solr_doc.subject, 'Forced migration'
   end
 
-  #TODO: test "Abstract attribute set correctly" do
+  test "check if item is claimed" do
+    refute @@solr_doc.is_it_claimed?
+  end
+
+  test "check if transition to Submitted is allowed" do 
+   assert @@solr_doc.transition_allowed? Sufia.config.submitted_status
+  end
+
+  test "check if transition to Published is allowed" do 
+   refute @@solr_doc.transition_allowed? Sufia.config.published_status
+  end  
+
+  test "check if transition to Rejected is allowed" do 
+   refute @@solr_doc.transition_allowed? Sufia.config.rejected_status
+  end   
 
 
-end
+end #class
