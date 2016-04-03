@@ -6,12 +6,6 @@ class ReviewingControllerTest < FunctionalTest
   include DataGenerator
 
 
-  # NO_OF_TEST_DATA_ITEMS = 3
-  # delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
-
-  # MiniTest::Unit.after_tests {delete_solr_test_data}
-
-
   test "GET index responds with :success for reviewer" do
     get :index
     assert_response :success
