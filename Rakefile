@@ -22,7 +22,7 @@ namespace :test do
 	task :seed_solr, [:how_many_items] => :environment do |t, args|
 		WebMock.allow_net_connect!
 		require_relative 'test/lib/data_generator'
-		extend DataGenerator
+		include DataGenerator
 		(self.delete_solr_test_data and self.create_solr_test_data(args.how_many_items.to_i)) ? 
 		puts("Solr seeded succesfully!") : puts("*** Solr seeding failed! ***")
 	end
@@ -31,7 +31,7 @@ namespace :test do
 	task :unseed_solr => :environment do
 		WebMock.allow_net_connect!
 		require_relative 'test/lib/data_generator'
-		extend DataGenerator
+		include DataGenerator
 		self.delete_solr_test_data ? puts("Solr cleared succesfully!")
 		: puts("*** Solr clearing failed! ***")
 	end
