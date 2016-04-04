@@ -23,5 +23,5 @@ env:
 
 script: 
   - bundle exec rake ora:travis:build
-  - curl -I http://0.0.0.0:8181
+  - echo `echo $(curl -s -o /dev/null -w "%{http_code}" "http://localhost:$JETTY_PORT/solr/")`
   
