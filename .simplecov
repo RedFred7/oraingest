@@ -6,6 +6,7 @@ We use three different test suites in this project: RSpec, Minitest and Cucumber
 SimpleCov.formatter = SimpleCov::Formatter::HTMLFormatter
 
 SimpleCov.start 'rails' do 
+  add_filter '/spec/'
   add_filter '/test/'
   add_filter '/config/'
   add_filter '/lib/qa/'
