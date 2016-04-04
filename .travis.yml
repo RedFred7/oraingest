@@ -23,5 +23,5 @@ env:
 
 script: 
   - bundle exec rake ora:travis:build
-  - echo `echo $(curl -s -o /dev/null -w "%{http_code}" "http://localhost:$JETTY_PORT/solr/")`
+  - bundle exec rake fred
   
