@@ -41,6 +41,7 @@ end
 
 Coveralls::RakeTask.new
 task :test_with_coveralls => [:spec, 'test:unit', 'coveralls:push']
+task :test_all => ['test:unit', 'test:functional']
 
 
 OraHydra::Application.load_tasks
