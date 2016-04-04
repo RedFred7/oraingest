@@ -22,5 +22,5 @@ env:
 
 script: 
   - bundle exec rake ora:travis:build
-  - bundle exec rake test_all
+  - curl -I http://localhost:8080/solr/\#/test
   
