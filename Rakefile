@@ -39,6 +39,11 @@ namespace :test do
 end
 
 
+task :fred do
+	puts "++++++++++running fred task"
+	puts `echo $(curl -s -o /dev/null -w "%{http_code}" "http://localhost:$JETTY_PORT/solr/")`
+end
+
 Coveralls::RakeTask.new
 task :test_with_coveralls => [:spec, 'test:unit', 'coveralls:push']
 task :test_all => ['test:unit', 'test:functional']
