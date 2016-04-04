@@ -11,8 +11,7 @@ before_script:
   - cp config/databank_credentials_example.yml config/databank_credentials.yml
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
-  - bundle exec rake jetty:config
-  - bundle exec rake jetty:start  
+
 
 gemfile:
   - Gemfile
@@ -24,5 +23,5 @@ env:
 
 script: 
   - bundle exec rake ora:travis:build
-  - curl -I http://localhost:8181/solr/
+  - curl -I http://127.0.01:8181
   
