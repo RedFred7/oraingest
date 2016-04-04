@@ -40,7 +40,7 @@ end
 
 
 Coveralls::RakeTask.new
-task :test_with_coveralls => [:spec,  'coveralls:push']
+task :test_with_coveralls => ['test:unit', 'coveralls:push']
 
 
 OraHydra::Application.load_tasks
