@@ -43,6 +43,7 @@ end
 task :fred do
 	puts "++++++++++running fred task"
 	# puts `echo $(curl -s -o /dev/null -w "%{http_code}" "http://localhost:$JETTY_PORT/solr/")`
+	WebMock.allow_net_connect!
 	solr = RSolr.connect :url => "http://localhost:#{ENV['JETTY_PORT']}/solr"
 	puts  "http://localhost:#{ENV['JETTY_PORT']}/solr"
 	res = solr.get 'select', :params => {:q => '*:*'}
