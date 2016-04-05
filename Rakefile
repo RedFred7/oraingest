@@ -5,6 +5,7 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake/testtask'
 require 'coveralls/rake/task'
+require 'rsolr'
 
 namespace :test do
 
@@ -41,7 +42,11 @@ end
 
 task :fred do
 	puts "++++++++++running fred task"
-	puts `echo $(curl -s -o /dev/null -w "%{http_code}" "http://localhost:$JETTY_PORT/solr/")`
+	# puts `echo $(curl -s -o /dev/null -w "%{http_code}" "http://localhost:$JETTY_PORT/solr/")`
+	solr = RSolr.connect :url => "http://localhost:#{ENV['JETTY_PORT']}/solr"
+	puts  "http://localhost:#{ENV['JETTY_PORT']}/solr"
+	res = solr.get 'select', :params => {:q => '*:*'}
+	puts res['responseHeader']['status']
 end
 
 Coveralls::RakeTask.new
