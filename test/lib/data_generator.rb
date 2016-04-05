@@ -36,7 +36,7 @@ module DataGenerator
 
       # generate test data
       (no_of_items-1).times do
-        # solr_test_item = Hash.new.replace(SOLR_DOC_TEMPLATE)
+        # make deep copy of SOLR_DOC_TEMPLATE object
         solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
         solr_test_item['id'] = "uuid:#{SecureRandom.uuid}"
         solr_test_item['desc_metadata__title_tesim'] =
