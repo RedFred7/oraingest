@@ -92,10 +92,13 @@ class ReviewingController < ApplicationController
       end
 
       solr_item_to_update = SolrDoc.new(response["response"]["docs"].first)
-      
-      if (%w(on yes true).include? params[:claim]) &&
-          (solr_item_to_update.transition_allowed? Sufia.config.claimed_status)
-        solr_doc = mark_doc_as_claimed(solr_item_to_update, usr_name)
+      if %w(on yes true).include? params[:claim]
+        if solr_item_to_update.transition_allowed?(Sufia.config.claimed_status)
+          solr_doc = mark_doc_as_claimed(solr_item_to_update, usr_name)
+        else
+          flash[:error] = "Not allowed to claim item #{solr_item_to_update.id}"
+          return
+        end
       end
 
       solr_doc = mark_doc_as_unclaimed(solr_item_to_update) if %w(off no false).include? params[:claim]
