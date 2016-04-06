@@ -8,7 +8,7 @@
 	<%= type %>
 	</span>
 	<div id="item_title"><strong>
-		<%= link_to item.title, articles_path(item.id) %>
+		<%= link_to item.trim_title, articles_path(item.id) %>
 	</strong></div>
 	<div id="item_creator" class="small">
 		<strong>Creator: </strong>
@@ -16,7 +16,7 @@
 	</div>
 	<div id="item_abstract" class="small">
 		<strong>Abstract: </strong>
-		<%= item.abstract %>
+		<%= item.trim_abstract %>
 	</div>
 	<%= render partial: 'article_aside', locals: {item: item}  %>
 	

@@ -5,6 +5,7 @@ class SolrDoc
   # any manipulation, go here
   attr_writer :current_reviewer, :title
   attr_accessor :id, :all_reviewers, :status
+  attr_reader :abstract, :creator, :type, :depositor, :date_published, :date_accepted 
 
 
   # constructs a SolrItem based on a SolrResponse document.

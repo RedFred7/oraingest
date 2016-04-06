@@ -2,7 +2,7 @@
 
 # This module is responsible for mapping between Solr-style field names and
 # sensible attribute names for our objects and views. Can be used to
-# quickly initialize classes, e.g. see DashboardItem
+# quickly initialize classes, e.g. see SolrDoc
 #
 
 module Solrium

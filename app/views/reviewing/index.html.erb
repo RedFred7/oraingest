@@ -22,7 +22,7 @@
 			<table>
 				<% @docs_list.each do |raw_doc| %>
 					<% solr_doc = SolrDoc.new(raw_doc) %>
-					<% item = DashboardItem.new(solr_doc) %>
+					<% item = SolrDocPresenter.new(solr_doc) %>
 					<tr>
 						<article class="review-article">
 							<%= render partial: 'article_content', locals: {item: item} %>

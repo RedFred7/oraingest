@@ -29,6 +29,21 @@ class ActiveSupport::TestCase
 end
 
 
+class UnitTest < ActiveSupport::TestCase
+  include DataGenerator
+
+  NO_OF_TEST_DATA_ITEMS = 6
+  setup do
+    delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
+
+  end
+
+  teardown do
+    delete_solr_test_data
+  end
+end
+
+
 
 class FunctionalTest < ActionController::TestCase
   include Devise::TestHelpers
