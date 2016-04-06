@@ -22,17 +22,17 @@ module DataGenerator
 
 
       # generate test data
-      (no_of_items-1).times do
-        @test_data << generate_solr_doc.to_hash
+      (no_of_items-2).times do
+        @test_data << generate_solr_doc
       end
 
       # add a item with claimed status
-      @test_data << generate_solr_doc(reviewer: @user, status: Sufia.config.claimed_status).to_hash
+      @test_data << generate_solr_doc(reviewer: @user, status: Sufia.config.claimed_status)
 
       # add a item with assigned status
-      @test_data << generate_solr_doc(reviewer: @user, status: Sufia.config.assigned_status).to_hash
+      @test_data << generate_solr_doc(reviewer: @user, status: Sufia.config.assigned_status)
 
-      res = SOLR_CONNECTION.add @test_data
+      res = SOLR_CONNECTION.add @test_data.map(&:to_hash)
       save_to_solr
     end
 
@@ -41,10 +41,13 @@ module DataGenerator
       save_to_solr
     end
 
-    def test_data
-      @test_data
+    def get_test_data_with_status(status)
+    	@test_data.select {|i| i.last_status == status}
     end
 
+    def get_test_data_without_status(status)
+    	@test_data.select {|i| i.last_status != status}
+    end    
 
 
     private
@@ -66,9 +69,9 @@ module DataGenerator
         solr_doc.current_reviewer = Array.new(1, args[:reviewer])
       end
       if args[:status] && (args[:status] == Sufia.config.claimed_status)
-        solr_doc.status.push Sufia.config.submitted_status, Sufia.config.claimed_status
-      else
-        solr_doc.status.push( args[:status] || Sufia.config.draft_status )
+        solr_doc.status.push  Sufia.config.claimed_status
+      elsif args[:status]
+        solr_doc.status.push( args[:status] )
       end
       solr_doc
     end

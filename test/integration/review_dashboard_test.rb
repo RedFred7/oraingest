@@ -23,7 +23,7 @@ class ReviewDashboardTest < CapybaraTest
 
   test "reviewer can claim a draft item" do
     visit '/dash'
-    title_to_claim = @test_data.first["desc_metadata__title_tesim"].first
+    title_to_claim = get_test_data_with_status(Sufia.config.submitted_status).first.title
     fill_in('dash_search', :with => title_to_claim.gsub(/\s/, '+'))
     click_button('dash_submit')
     assert_equal page.has_text?("1 Items found"), true
