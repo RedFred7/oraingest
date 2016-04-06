@@ -11,7 +11,7 @@ require "lib/data_generator"
 
 require 'minitest/reporters'
 Minitest::Reporters.use!(
-  Minitest::Reporters::DefaultReporter.new,
+  Minitest::Reporters::SpecReporter.new,
   ENV,
   Minitest.backtrace_filter
 )
@@ -35,7 +35,7 @@ class FunctionalTest < ActionController::TestCase
 
   Filter = Struct.new(:facet, :value, :predicate)
 
-  NO_OF_TEST_DATA_ITEMS = 3
+  NO_OF_TEST_DATA_ITEMS = 6
   setup do
     sign_in users(:reviewer)
     delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
