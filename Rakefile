@@ -41,7 +41,7 @@ end
 
 
 task :fred do
-	puts "++++++++++running fred task"
+	puts "... running fred task"
 	WebMock.allow_net_connect!
 	solr = RSolr.connect :url => "http://localhost:8181/solr"
 	res = solr.get 'select', :params => {:q => '*:*'}
@@ -50,7 +50,6 @@ end
 
 Coveralls::RakeTask.new
 task :test_with_coveralls => [:spec, 'test:unit', 'coveralls:push']
-task :test_all => ['test:unit', 'test:functional']
 
 
 OraHydra::Application.load_tasks
