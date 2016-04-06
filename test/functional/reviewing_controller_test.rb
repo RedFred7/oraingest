@@ -39,7 +39,7 @@ class ReviewingControllerTest < FunctionalTest
   test "an item is claimed" do
     item_to_claim = @test_data[1]
 
-    if ReviewingControllerTest.claim_an_item( item_to_claim, @controller.current_user )
+    if claim_an_item( item_to_claim, @controller.current_user )
       filter = [{facet: "STATUS",value: "Claimed"},{facet: "CURRENT_REVIEWER",value: "#{@controller.current_user}"}]
 
       get :index, {apply_filter: filter}

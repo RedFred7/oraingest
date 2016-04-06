@@ -9,21 +9,6 @@ module DataGenerator
   SOLR_CONNECTION ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
 
 
-  module ClassMethods
-    def claim_an_item(item, user)
-      # make deep copy of SOLR_DOC_TEMPLATE object
-      item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
-      solr_doc = SolrDoc.new(item)
-      solr_doc.id = "uuid:#{SecureRandom.uuid}"
-      solr_doc.title = Array.new(1, Faker::Lorem.sentence)
-      solr_doc.all_reviewers.push user.email
-      solr_doc.current_reviewer = Array.new(1, user.email)
-      solr_doc.status.push Sufia.config.claimed_status
-      res = SOLR_CONNECTION.add(solr_doc.to_hash) and SOLR_CONNECTION.commit
-      res['responseHeader']['status'] == 0
-
-    end
-  end
 
   module InstanceMethods
 
@@ -38,16 +23,11 @@ module DataGenerator
 
       # generate test data
       (no_of_items-1).times do
-        # make deep copy of SOLR_DOC_TEMPLATE object
-        solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
-        solr_doc = SolrDoc.new(solr_test_item)
-        solr_doc.id = "uuid:#{SecureRandom.uuid}"
-        solr_doc.title = Array.new(1, Faker::Lorem.sentence)
-        @test_data << solr_doc.to_hash
+        @test_data << generate_solr_doc.to_hash
       end
 
-
-      @test_data << generate_claimed_item(@user).to_hash
+      # add a item with claimed status
+      @test_data << generate_solr_doc(@user, Sufia.config.claimed_status).to_hash
 
 
       res = SOLR_CONNECTION.add @test_data
@@ -73,23 +53,36 @@ module DataGenerator
     end
 
 
-
-    def generate_claimed_item(current_user)
+    def generate_solr_doc(current_user=nil,
+                          status=Sufia.config.draft_status,
+                          title=nil)
+      # make deep copy of SOLR_DOC_TEMPLATE object
       solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
       solr_doc = SolrDoc.new(solr_test_item)
       solr_doc.id = "uuid:#{SecureRandom.uuid}"
-      solr_doc.title = Array.new(1, Faker::Lorem.sentence)
-      solr_doc.all_reviewers.push "user@example.com", "qa@bodleian.ac.co.uk", current_user
-      solr_doc.current_reviewer = Array.new(1, current_user)
-      solr_doc.status.push Sufia.config.claimed_status
+      solr_doc.title = title || Array.new(1, Faker::Lorem.sentence)
+      if current_user
+        solr_doc.all_reviewers.push "user@example.com", "qa@bodleian.ac.co.uk", current_user
+        solr_doc.current_reviewer = Array.new(1, current_user)
+      end
+      solr_doc.status.push status
       solr_doc
     end
+
+    def claim_an_item(item, user)
+      solr_doc = generate_solr_doc
+      solr_doc.all_reviewers.push user.email
+      solr_doc.current_reviewer = Array.new(1, user.email)
+      solr_doc.status.push Sufia.config.claimed_status
+      res = SOLR_CONNECTION.add(solr_doc.to_hash) and SOLR_CONNECTION.commit
+      res['responseHeader']['status'] == 0
+
+    end    
 
   end #module
 
 
   def self.included(receiver)
-    receiver.extend ClassMethods
     receiver.send :include, InstanceMethods
   end
 
