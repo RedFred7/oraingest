@@ -27,8 +27,10 @@ module DataGenerator
       end
 
       # add a item with claimed status
-      @test_data << generate_solr_doc(@user, Sufia.config.claimed_status).to_hash
+      @test_data << generate_solr_doc(reviewer: @user, status: Sufia.config.claimed_status).to_hash
 
+      # add a item with assigned status
+      @test_data << generate_solr_doc(reviewer: @user, status: Sufia.config.assigned_status).to_hash
 
       res = SOLR_CONNECTION.add @test_data
       save_to_solr
@@ -53,19 +55,21 @@ module DataGenerator
     end
 
 
-    def generate_solr_doc(current_user=nil,
-                          status=Sufia.config.draft_status,
-                          title=nil)
+    def generate_solr_doc(**args)
       # make deep copy of SOLR_DOC_TEMPLATE object
       solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
       solr_doc = SolrDoc.new(solr_test_item)
       solr_doc.id = "uuid:#{SecureRandom.uuid}"
-      solr_doc.title = title || Array.new(1, Faker::Lorem.sentence)
-      if current_user
-        solr_doc.all_reviewers.push "user@example.com", "qa@bodleian.ac.co.uk", current_user
-        solr_doc.current_reviewer = Array.new(1, current_user)
+      solr_doc.title = args[:title] || Array.new(1, Faker::Lorem.sentence)
+      if args[:reviewer]
+        solr_doc.all_reviewers.push "user@example.com", "qa@bodleian.ac.co.uk", args[:reviewer]
+        solr_doc.current_reviewer = Array.new(1, args[:reviewer])
       end
-      solr_doc.status.push status
+      if args[:status] && (args[:status] == Sufia.config.claimed_status)
+        solr_doc.status.push Sufia.config.submitted_status, Sufia.config.claimed_status
+      else
+        solr_doc.status.push( args[:status] || Sufia.config.draft_status )
+      end
       solr_doc
     end
 
@@ -77,7 +81,7 @@ module DataGenerator
       res = SOLR_CONNECTION.add(solr_doc.to_hash) and SOLR_CONNECTION.commit
       res['responseHeader']['status'] == 0
 
-    end    
+    end
 
   end #module
 
