@@ -33,6 +33,19 @@ class ReviewDashboardTest < CapybaraTest
   end
 
 
+  test "reviewer cannot claim an assigned item" do
+    # visit '/dash'
+    # title_to_claim = @test_data.first["desc_metadata__title_tesim"].first
+    # fill_in('dash_search', :with => title_to_claim.gsub(/\s/, '+'))
+    # click_button('dash_submit')
+    # assert_equal page.has_text?("1 Items found"), true
+    # click_link('claim_item_btn')
+    # assert_equal page.has_selector?('span.tag.tag-claimed'), true
+    # assert_equal page.has_selector?('a#unclaim_item_btn'), true
+  end
+
+
+
   test 'reviewer can unclaim a claimed item' do
     visit '/dash'
     click_link("Show all items")

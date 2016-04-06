@@ -11,13 +11,15 @@ module DataGenerator
 
   module ClassMethods
     def claim_an_item(item, user)
+      # make deep copy of SOLR_DOC_TEMPLATE object
       item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
-      item['id'] = "uuid:#{SecureRandom.uuid}"
-      item['desc_metadata__title_tesim'] = Array.new(1, Faker::Lorem.sentence)
-      item["MediatedSubmission_all_reviewer_ids_ssim"].push user.email
-      item["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, user.email)
-      item["MediatedSubmission_status_ssim"].push Sufia.config.claimed_status
-      res = SOLR_CONNECTION.add(item) and SOLR_CONNECTION.commit
+      solr_doc = SolrDoc.new(item)
+      solr_doc.id = "uuid:#{SecureRandom.uuid}"
+      solr_doc.title = Array.new(1, Faker::Lorem.sentence)
+      solr_doc.all_reviewers.push user.email
+      solr_doc.current_reviewer = Array.new(1, user.email)
+      solr_doc.status.push Sufia.config.claimed_status
+      res = SOLR_CONNECTION.add(solr_doc.to_hash) and SOLR_CONNECTION.commit
       res['responseHeader']['status'] == 0
 
     end
@@ -38,14 +40,14 @@ module DataGenerator
       (no_of_items-1).times do
         # make deep copy of SOLR_DOC_TEMPLATE object
         solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
-        solr_test_item['id'] = "uuid:#{SecureRandom.uuid}"
-        solr_test_item['desc_metadata__title_tesim'] =
-          Array.new(1, Faker::Lorem.sentence)
-        @test_data << solr_test_item
+        solr_doc = SolrDoc.new(solr_test_item)
+        solr_doc.id = "uuid:#{SecureRandom.uuid}"
+        solr_doc.title = Array.new(1, Faker::Lorem.sentence)
+        @test_data << solr_doc.to_hash
       end
 
 
-      @test_data << generate_claimed_item(@user)
+      @test_data << generate_claimed_item(@user).to_hash
 
 
       res = SOLR_CONNECTION.add @test_data
@@ -74,15 +76,15 @@ module DataGenerator
 
     def generate_claimed_item(current_user)
       solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
-      solr_test_item['id'] = "uuid:#{SecureRandom.uuid}"
-      solr_test_item['desc_metadata__title_tesim'] = Array.new(1, Faker::Lorem.sentence)      
-      solr_test_item["MediatedSubmission_all_reviewer_ids_ssim"].push "user@example.com", "qa@bodleian.ac.co.uk", current_user
-      solr_test_item["MediatedSubmission_current_reviewer_id_ssim"] = Array.new(1, current_user)
-      solr_test_item["MediatedSubmission_status_ssim"].push Sufia.config.submitted_status, Sufia.config.claimed_status
-      solr_test_item
-
-
+      solr_doc = SolrDoc.new(solr_test_item)
+      solr_doc.id = "uuid:#{SecureRandom.uuid}"
+      solr_doc.title = Array.new(1, Faker::Lorem.sentence)
+      solr_doc.all_reviewers.push "user@example.com", "qa@bodleian.ac.co.uk", current_user
+      solr_doc.current_reviewer = Array.new(1, current_user)
+      solr_doc.status.push Sufia.config.claimed_status
+      solr_doc
     end
+
   end #module
 
 

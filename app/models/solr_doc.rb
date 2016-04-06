@@ -3,8 +3,8 @@ class SolrDoc
 
   # any instance variables we want to expose to the world as-is, without
   # any manipulation, go here
-  attr_reader :id
-  attr_accessor :all_reviewers, :current_reviewer, :status
+  attr_writer :current_reviewer, :title
+  attr_accessor :id, :all_reviewers, :status
 
 
   # constructs a SolrItem based on a SolrResponse document.
