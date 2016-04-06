@@ -12,7 +12,7 @@
 	<%  if item_claimed %>
 		<a href="?claim=off&claim_id=<%= id %>" id="unclaim_item_btn" class="button button-small light-blue">Un-claim
 		<i alt="Unclaim" class="fa fa-user-times fa-fw pull-right"></i></a>	
-	<% else %>
+	<% elsif can_claim %>
 		<a href="?claim=on&claim_id=<%= id %>" id="claim_item_btn" class="button button-small light-blue">Claim
 		<i alt="Claim" class="fa fa-user-plus fa-fw pull-right"></i></a>
 	<% end %>
