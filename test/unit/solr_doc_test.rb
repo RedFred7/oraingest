@@ -29,7 +29,7 @@ class SolrDocTest < ActiveSupport::TestCase
 
 
   test "Status attribute set correctly" do
-    assert_equal 'Draft', @@solr_doc.status.first if (@@solr_doc.status && !@@solr_doc.status.empty?)
+    assert_equal 'Submitted', @@solr_doc.status.first if (@@solr_doc.status && !@@solr_doc.status.empty?)
   end
 
   test "Title attribute set correctly" do
@@ -78,16 +78,20 @@ class SolrDocTest < ActiveSupport::TestCase
     refute @@solr_doc.is_it_claimed?
   end
 
-  test "check if transition to Submitted is allowed" do 
-   assert @@solr_doc.transition_allowed? Sufia.config.submitted_status
+  test "check that transition to Claimed is allowed" do 
+   assert @@solr_doc.transition_allowed? Sufia.config.claimed_status
   end
 
-  test "check if transition to Published is allowed" do 
+  test "check that transition to Assigned is allowed" do 
+   assert @@solr_doc.transition_allowed? Sufia.config.assigned_status
+  end  
+
+  test "check that transition to Published is not allowed" do 
    refute @@solr_doc.transition_allowed? Sufia.config.published_status
   end  
 
-  test "check if transition to Rejected is allowed" do 
-   refute @@solr_doc.transition_allowed? Sufia.config.rejected_status
+  test "check that transition to DOI is not allowed" do 
+   refute @@solr_doc.transition_allowed? Sufia.config.doi_status
   end   
 
 
