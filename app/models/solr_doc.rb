@@ -30,7 +30,8 @@ class SolrDoc
   end
 
   def allowed_transitions
-  	Sufia.config.next_workflow_status[self.last_status]
+    return [] if self.last_status.empty?
+    Sufia.config.next_workflow_status[self.last_status]
   end
 
   def transition_allowed?(new_status)
@@ -60,7 +61,8 @@ class SolrDoc
   end
 
   def last_status
-    @status ? @status.last : ""
+    return "" unless @status
+    @status.empty? ? "" : @status.last
   end
 
   def type
