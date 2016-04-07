@@ -3,10 +3,6 @@ require 'delegate'
 
 class SolrDocPresenter < SimpleDelegator
 
-  def description
-    "this is my presenter"
-  end
-
   def tickets
     @rt_tickets ||= []
   end

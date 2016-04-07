@@ -2,10 +2,6 @@ module DataGenerator
   require 'faker'
 
 
-  data_file ||= File.open("test/data/solr_doc", "r")
-  SOLR_DOC_TEMPLATE = eval(data_file.read)
-  data_file.close
-
   SOLR_CONNECTION ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
 
 
@@ -16,7 +12,7 @@ module DataGenerator
     def create_solr_test_data(no_of_items)
 
       @test_data = []
-      raise TypeError, "'solr_doc_template' isn't a Hash" unless SOLR_DOC_TEMPLATE.is_a? Hash
+      raise TypeError, "'solr_doc_template' isn't a Hash" unless SOLR_DOC_ARTICLE.is_a? Hash
 
       raise ArgumentError, "'no_of_items' must be a number" unless no_of_items.is_a? Fixnum
 
@@ -59,8 +55,8 @@ module DataGenerator
 
 
     def generate_solr_doc(**args)
-      # make deep copy of SOLR_DOC_TEMPLATE object
-      solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_TEMPLATE))
+      # make deep copy of SOLR_DOC_ARTICLE object
+      solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_ARTICLE))
       solr_doc = SolrDoc.new(solr_test_item)
       solr_doc.id = "uuid:#{SecureRandom.uuid}"
       solr_doc.title = args[:title] || Array.new(1, Faker::Lorem.sentence)

@@ -33,6 +33,7 @@ module OraHydra
       #{config.root}/lib
       #{config.root}/app/models/concerns
       #{config.root}/app/decorators
+      #{config.root}/test/data_samples
     )
     #config.autoload_paths += %W(#{config.root}/lib/qa/authorities/)
 

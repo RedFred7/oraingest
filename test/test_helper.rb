@@ -35,7 +35,7 @@ class UnitTest < ActiveSupport::TestCase
   NO_OF_TEST_DATA_ITEMS = 6
   setup do
     delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
-
+    @doc = get_test_data_with_status(Sufia.config.submitted_status).first
   end
 
   teardown do
