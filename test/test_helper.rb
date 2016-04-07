@@ -29,13 +29,14 @@ class ActiveSupport::TestCase
 end
 
 
-class UnitTest < ActiveSupport::TestCase
+class DecoratorUnitTest < ActiveSupport::TestCase
   include DataGenerator
 
   NO_OF_TEST_DATA_ITEMS = 6
   setup do
     delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
     @doc = get_test_data_with_status(Sufia.config.submitted_status).first
+    @decorated_doc = SolrDocPresenter.new(@doc)
   end
 
   teardown do

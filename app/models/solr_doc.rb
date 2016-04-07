@@ -3,17 +3,15 @@ class SolrDoc
 
   # any instance variables we want to expose to the world as-is, without
   # any manipulation, go here
-  attr_writer :current_reviewer, :title
-  attr_accessor :id, :all_reviewers, :status
-  attr_reader :abstract, :creator, :type, :depositor, :date_published, :date_accepted 
+  attr_accessor :id, :all_reviewers, :status, :current_reviewer, :title, :abstract, :creator, :type, :depositor, :date_published, :date_accepted
 
 
-  # constructs a SolrItem based on a SolrResponse document.
-  # Reads the properties defined in Solrium module and -for each- sets
-  # instance variables and accessor methods
-  #
-  # @param solr_response_item [SolrResponse] the hash-like representation
-  # of a Solr document
+    # constructs a SolrItem based on a SolrResponse document.
+    # Reads the properties defined in Solrium module and -for each- sets
+    # instance variables and accessor methods
+    #
+    # @param solr_response_item [SolrResponse] the hash-like representation
+    # of a Solr document
   def initialize(solr_response_item)
     Solrium.each do |nice_name, solr_name|
       self.instance_variable_set("@#{nice_name.to_s.downcase}", solr_response_item[solr_name])
@@ -46,11 +44,15 @@ class SolrDoc
   # define explicit getters for instance variables we want to refine
   # before exposing to the outside
   def title
-    @title ? @title.first : ""
+    return "" unless @title
+    return @title if @title.is_a? String
+    return @title.first if @title.is_a? Array
   end
 
   def abstract
-    @abstract ? @abstract.first : ""
+    return "" unless @abstract
+    return @abstract if @abstract.is_a? String
+    return @abstract.first if @abstract.is_a? Array
   end
 
   def creator
@@ -91,5 +93,8 @@ class SolrDoc
     @subject ? @subject : ""
   end
 
+  def rt_tickets
+    @rt_tickets || []
+  end
 
 end

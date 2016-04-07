@@ -1,6 +1,9 @@
 require 'delegate'
 
 
+TRIM_LENGTH = 297
+
+
 class SolrDocPresenter < SimpleDelegator
 
   def tickets
@@ -19,17 +22,17 @@ class SolrDocPresenter < SimpleDelegator
   end
 
   def trim_title
-  	self.title ? trim_text(self.title, 300) : ""
+    self.title ? trim_text(self.title, TRIM_LENGTH) : ""
   end
 
   def trim_abstract
-  	self.abstract ? trim_text(self.abstract, 300) : ""
+    self.abstract ? trim_text(self.abstract, TRIM_LENGTH) : ""
   end
 
   def date
-    if !self.date_published.empty?
+    if (self.date_published && !self.date_published.empty?)
       self.date_published
-    elsif !self.date_accepted.empty?
+    elsif (self.date_accepted && !self.date_accepted.empty?)
       self.date_accepted
     else
       ""
