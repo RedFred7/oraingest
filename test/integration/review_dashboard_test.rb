@@ -51,7 +51,7 @@ class ReviewDashboardTest < CapybaraTest
     assert_equal page.has_text?("1 Items found"), true
     assert_equal page.has_selector?('a#unclaim_item_btn'), true
     click_link('unclaim_item_btn')
-    assert page.has_text?("No Items retrieved for these search criteria.")
+    assert page.has_text?("No Items found.")
   end
 
 
