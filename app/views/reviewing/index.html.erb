@@ -1,7 +1,6 @@
 <% @page_title = application_name + " Review Submissions" %>
 <% name = (Rails.env.production? ? "#{current_user.first_name}'s" : current_user) %>
 <h2 class="heading2"><%= name %> Dashboard</h2>
-
 <% if @docs_found > 0 %>
 	<%= render 'search_review_dash' %>
 	<div class="row">
@@ -35,5 +34,5 @@
 		</div>		
 	</div>	
 <% else %>
-	<%= render 'no_items_found' %>
+	<%= render partial: 'no_items_found', locals: { claiming: is_it_looking_for_claimed? } %> 
 <% end %>
