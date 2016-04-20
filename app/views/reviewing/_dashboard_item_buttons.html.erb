@@ -1,19 +1,19 @@
 <div class="buttons">
-	<a href="/datasets/<%= id %>" class="button button-small light-blue">Read
+	<a href="/<%= item.type.pluralize.downcase %>/<%= item.id %>" class="button button-small light-blue">Read
 		<i alt="Read" class="fa fa-eye fa-fw pull-right"></i>
 	</a>
-	<a href="/datasets/<%= id %>/edit" class="button button-small light-blue">Edit
+	<a href="/<%= item.type.pluralize.downcase %>/<%= item.id %>/edit" class="button button-small light-blue">Edit
 		<i alt="Edit" class="fa fa-edit fa-fw pull-right"></i>
 	</a>
 	<a href="#" class="button button-small light-blue">Delete
 		<i alt="Delete" class="fa fa-remove fa-fw pull-right"></i>
 	</a>
 	
-	<%  if item_claimed %>
-		<a href="?claim=off&claim_id=<%= id %>" id="unclaim_item_btn" class="button button-small light-blue">Un-claim
+	<%  if item.is_it_claimed? %>
+		<a href="?claim=off&claim_id=<%= item.id %>" id="unclaim_item_btn" class="button button-small light-blue">Un-claim
 		<i alt="Unclaim" class="fa fa-user-times fa-fw pull-right"></i></a>	
 	<% elsif can_claim %>
-		<a href="?claim=on&claim_id=<%= id %>" id="claim_item_btn" class="button button-small light-blue">Claim
+		<a href="?claim=on&claim_id=<%= item.id %>" id="claim_item_btn" class="button button-small light-blue">Claim
 		<i alt="Claim" class="fa fa-user-plus fa-fw pull-right"></i></a>
 	<% end %>
 </div>
