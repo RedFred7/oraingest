@@ -5,6 +5,8 @@ class SolrDoc
   # any manipulation, go here
   attr_accessor :id, :all_reviewers, :status, :current_reviewer, :title, :abstract, :creator, :type, :depositor, :date_published, :date_accepted
 
+  attr_reader :model
+
 
     # constructs a SolrItem based on a SolrResponse document.
     # Reads the properties defined in Solrium module and -for each- sets
