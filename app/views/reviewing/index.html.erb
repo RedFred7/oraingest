@@ -26,7 +26,7 @@
 						<article class="review-article">
 							<%= render partial: 'article_content', locals: {item: item} %>
 							<%= render partial: 'dashboard_item_buttons', locals:
-							{id: item.id, item_claimed: item.is_it_claimed?, can_claim: solr_doc.transition_allowed?('Claimed')} %>
+							{item: item, can_claim: solr_doc.transition_allowed?('Claimed')} %>
 						</article>
 					</tr>
 				<% end %>
