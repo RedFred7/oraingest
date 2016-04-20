@@ -42,7 +42,6 @@ class ReviewingController < ApplicationController
 
 
     if params[:remove_filter]
-
       if params[:remove_filter][:predicate]
         params[:remove_filter][:predicate] = nil if params[:remove_filter][:predicate].empty?
       end
@@ -236,10 +235,12 @@ class ReviewingController < ApplicationController
       (0...filter_list.length).step(1).each do |index|
         filter = filter_list[index]
         filter_value = filter.value.to_s.gsub(%r{\s}, '+')
-        query << "#{Solrium.lookup(filter.facet)}:#{filter_value}"
+        solr_string = "#{Solrium.lookup(filter.facet)}:#{filter_value}"
         if %w[NOT not Not].include? filter.predicate.to_s
-          query = query.prepend('NOT ')
+          solr_string = solr_string.prepend('NOT ')
         end
+
+        query << solr_string
         query << operator unless index == filter_list.length - 1
       end
     end
