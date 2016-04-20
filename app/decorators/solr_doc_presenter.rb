@@ -40,7 +40,7 @@ class SolrDocPresenter < SimpleDelegator
   end
 
   # Returns ref to the object we're decorating
-  def model
+  def decoratee
     __getobj__
   end
 
