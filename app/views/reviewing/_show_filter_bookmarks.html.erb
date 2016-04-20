@@ -8,7 +8,8 @@
 		</br>
 		</br>
 		<% h3 = Hash["facet", :STATUS, "value", :Claimed, "predicate", :NOT] %>		
-		<%= link_to "All unclaimed items"  ,  { controller: "reviewing", apply_filter: [h3]}, class: "fa fa-bookmark fa-sm", id: "unclaimed_bookmark" %>
+		<% h4 = Hash["facet", :STATUS, "value", :Draft, "predicate", :NOT] %>		
+		<%= link_to "All unclaimed items"  ,  { controller: "reviewing", apply_filter: [h3, h4]}, class: "fa fa-bookmark fa-sm", id: "unclaimed_bookmark" %>
 		</br>
 		</br>		
 		<%= link_to "Show all items"  ,  { controller: "reviewing", apply_filter: ['all']}, class: "fa fa-bookmark fa-sm",  id: "all_bookmark" %>
