@@ -6,6 +6,9 @@ require File.expand_path('../config/application', __FILE__)
 require 'rake/testtask'
 require 'coveralls/rake/task'
 require 'rsolr'
+require_relative 'test/lib/data_generator'
+include DataGenerator
+
 
 namespace :test do
 
@@ -19,22 +22,18 @@ namespace :test do
 	Rake::TestTask.new(all: [:spec, 'test:unit', 'test:functional', 'test:integration' ])
 
 
-	desc 'Create solr test data'
-	task :seed_solr, [:how_many_items] => :environment do |t, args|
+	desc 'Create test data'
+	task :seed_solr => :environment do
 		WebMock.allow_net_connect!
-		require_relative 'test/lib/data_generator'
-		include DataGenerator
-		(self.delete_solr_test_data and self.create_solr_test_data(args.how_many_items.to_i)) ? 
+		
+		(self.delete_solr_test_data and self.create_solr_test_data) ? 
 		puts("Solr seeded succesfully!") : puts("*** Solr seeding failed! ***")
 	end
 
-	desc 'Remove solr test data'
+	desc 'Remove test data'
 	task :unseed_solr => :environment do
 		WebMock.allow_net_connect!
-		require_relative 'test/lib/data_generator'
-		include DataGenerator
-		self.delete_solr_test_data ? puts("Solr cleared succesfully!")
-		: puts("*** Solr clearing failed! ***")
+		puts("#{delete_solr_test_data} items cleared!")
 	end
 
 end

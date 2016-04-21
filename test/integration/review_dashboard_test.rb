@@ -17,7 +17,7 @@ class ReviewDashboardTest < CapybaraTest
     visit '/dash'
     click_link("Show all items")
     click_link("All unclaimed items")
-    assert_equal page.has_text?("#{NO_OF_TEST_DATA_ITEMS-1} Items found"), true
+    assert_equal page.has_text?("#{NO_OF_TEST_DATA_ITEMS-2} Items found"), true
   end
 
 

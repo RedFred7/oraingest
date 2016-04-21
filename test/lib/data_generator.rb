@@ -9,77 +9,48 @@ module DataGenerator
   module InstanceMethods
 
 
-    def create_solr_test_data(no_of_items)
+    def create_solr_test_data
 
-      @test_data = []
-      raise TypeError, "'solr_doc_template' isn't a Hash" unless SOLR_DOC_ARTICLE.is_a? Hash
+      # raise ArgumentError, "'no_of_items' must be a number" unless no_of_items.is_a? Fixnum
 
-      raise ArgumentError, "'no_of_items' must be a number" unless no_of_items.is_a? Fixnum
+      15.times do |i|
+        t = Thesis.new(title: Faker::Lorem.sentence)
+        t.save
 
+        set_status(t, Sufia.config.draft_status) if i <= 5
+        set_status(t, Sufia.config.submitted_status) if (5..9).include? i
+        if i > 9
+          set_status(t, Sufia.config.claimed_status)
+          set_reviewer(t, "reviewer1@example.com")
+        end
+        t.save
 
-      # generate test data
-      (no_of_items-2).times do
-        @test_data << generate_solr_doc
+        solr_doc = SolrDoc.find_by_id(t.id)
+        solr_doc.type = "Thesis"
+        solr_doc.depositor = "test@bodleian.com"
+        solr_doc.save
       end
-
-      # add a item with claimed status
-      @test_data << generate_solr_doc(reviewer: @user, status: Sufia.config.claimed_status)
-
-      # add a item with assigned status
-      @test_data << generate_solr_doc(reviewer: @user, status: Sufia.config.assigned_status)
-
-      res = SOLR_CONNECTION.add @test_data.map(&:to_hash)
-      save_to_solr
     end
 
     def delete_solr_test_data
-      res = SOLR_CONNECTION.delete_by_query '*:*'
-      save_to_solr
+      if SolrDoc.delete_all
+        Thesis.delete_all
+      else
+        raise "failed to delete Solr data"
+      end
     end
 
-    def get_test_data_with_status(status)
-    	@test_data.select {|i| i.last_status == status}
-    end
-
-    def get_test_data_without_status(status)
-    	@test_data.select {|i| i.last_status != status}
-    end    
 
 
     private
 
-    def save_to_solr
-      res = SOLR_CONNECTION.commit
-      res['responseHeader']['status'] == 0
+
+    def set_status(publication, new_status)
+      publication.workflows.first.instance_variable_get(:@target)['entries'].target.first.status.unshift new_status
     end
 
-
-    def generate_solr_doc(**args)
-      # make deep copy of SOLR_DOC_ARTICLE object
-      solr_test_item = Marshal.load(Marshal.dump(SOLR_DOC_ARTICLE))
-      solr_doc = SolrDoc.new(solr_test_item)
-      solr_doc.id = "uuid:#{SecureRandom.uuid}"
-      solr_doc.title = args[:title] || Array.new(1, Faker::Lorem.sentence)
-      if args[:reviewer]
-        solr_doc.all_reviewers.push "user@example.com", "qa@bodleian.ac.co.uk", args[:reviewer]
-        solr_doc.current_reviewer = Array.new(1, args[:reviewer])
-      end
-      if args[:status] && (args[:status] == Sufia.config.claimed_status)
-        solr_doc.status.push  Sufia.config.claimed_status
-      elsif args[:status]
-        solr_doc.status.push( args[:status] )
-      end
-      solr_doc
-    end
-
-    def claim_an_item(item, user)
-      solr_doc = generate_solr_doc
-      solr_doc.all_reviewers.push user.email
-      solr_doc.current_reviewer = Array.new(1, user.email)
-      solr_doc.status.push Sufia.config.claimed_status
-      res = SOLR_CONNECTION.add(solr_doc.to_hash) and SOLR_CONNECTION.commit
-      res['responseHeader']['status'] == 0
-
+    def set_reviewer(publication, reviewer_id)
+      publication.workflows.first.instance_variable_get(:@target)['entries'].target.first.reviewer_id.unshift reviewer_id
     end
 
   end #module

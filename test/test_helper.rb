@@ -34,8 +34,8 @@ class DecoratorUnitTest < ActiveSupport::TestCase
 
   NO_OF_TEST_DATA_ITEMS = 6
   setup do
-    delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
-    @doc = get_test_data_with_status(Sufia.config.submitted_status).first
+    delete_solr_test_data and create_solr_test_data
+    @doc = SolrDoc.find_by_status(Sufia.config.submitted_status).first
     @decorated_doc = SolrDocPresenter.new(@doc)
   end
 
@@ -54,7 +54,7 @@ class FunctionalTest < ActionController::TestCase
   NO_OF_TEST_DATA_ITEMS = 6
   setup do
     sign_in users(:reviewer)
-    delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
+    delete_solr_test_data and create_solr_test_data
 
   end
 
@@ -78,7 +78,7 @@ class CapybaraTest <  ActionDispatch::IntegrationTest
     # Capybara.current_driver = :rack_test
     Capybara.current_driver = :selenium
     @user = users(:dashboard)
-    delete_solr_test_data and create_solr_test_data(NO_OF_TEST_DATA_ITEMS)
+    delete_solr_test_data and create_solr_test_data
     login_as @user
   end
 

@@ -8,12 +8,15 @@ class SolrDoc
   attr_reader :model
 
 
-    # constructs a SolrItem based on a SolrResponse document.
-    # Reads the properties defined in Solrium module and -for each- sets
-    # instance variables and accessor methods
-    #
-    # @param solr_response_item [SolrResponse] the hash-like representation
-    # of a Solr document
+  SOLR_CONNECTION ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
+
+
+  # constructs a SolrItem based on a SolrResponse document.
+  # Reads the properties defined in Solrium module and -for each- sets
+  # instance variables and accessor methods
+  #
+  # @param solr_response_item [SolrResponse] the hash-like representation
+  # of a Solr document
   def initialize(solr_response_item)
     Solrium.each do |nice_name, solr_name|
       self.instance_variable_set("@#{nice_name.to_s.downcase}", solr_response_item[solr_name])
@@ -98,5 +101,65 @@ class SolrDoc
   def rt_tickets
     @rt_tickets || []
   end
+
+  ############################
+  ##
+  # Solr data operations
+  ##
+  ###########################
+  def save
+    res = SOLR_CONNECTION.add self.to_hash
+    res['responseHeader']['status'] == 0
+  end
+
+  ############################
+  ##
+  # Class-wide operations
+  ##
+  ###########################
+  def self.delete_all
+    res = SOLR_CONNECTION.delete_by_query '*:*'
+    res = SOLR_CONNECTION.commit if res['responseHeader']['status'] == 0
+    res['responseHeader']['status'] == 0
+  end
+
+  def self.find_by_id(pid)
+    response = SOLR_CONNECTION.get 'select', :params => {:q => "id:#{pid}"}
+    if response['responseHeader']['status'] == 0
+      if response['response']['numFound'] == 1
+        SolrDoc.new( response['response']['docs'].first )
+      else raise "More than 1 Solr doc found for pid '#{pid}'"
+      end
+    else
+      raise "Solr error #{res['responseHeader']['status']} occured"\
+        "while looking for pid '#{pid}'"
+    end
+  end
+
+  def self.find_by_type(type, predicate=nil)
+    found = []
+    response = SOLR_CONNECTION.get 'select', :params => {:q => "#{predicate.to_s} desc_metadata__type_tesim:#{type}"}
+    if response['responseHeader']['status'] == 0
+      response['response']['docs'].each do |solr_hash|
+        found << SolrDoc.new( solr_hash )
+      end
+    else
+      raise "Solr error #{res['responseHeader']['status']} occured"\
+        "while looking for type '#{type}'"
+    end
+  end
+
+  def self.find_by_status(status, predicate=nil)
+    found = []
+    response = SOLR_CONNECTION.get 'select', :params => {:q => "#{predicate.to_s} MediatedSubmission_status_ssim:#{status}"}
+    if response['responseHeader']['status'] == 0
+      response['response']['docs'].each do |solr_hash|
+        found << SolrDoc.new( solr_hash )
+      end
+    else
+      raise "Solr error #{res['responseHeader']['status']} occured"\
+        "while looking for status '#{status}'"
+    end
+  end  
 
 end
