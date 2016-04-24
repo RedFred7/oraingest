@@ -6,11 +6,12 @@ require File.expand_path('../config/application', __FILE__)
 require 'rake/testtask'
 require 'coveralls/rake/task'
 require 'rsolr'
-require_relative 'test/lib/data_generator'
-include DataGenerator
 
 
 namespace :test do
+
+	require_relative 'test/lib/data_generator'
+	include DataGenerator
 
 	%w(features functional helpers performance unit).each do |name|
 		Rake::TestTask.new(name) do |t|
@@ -23,29 +24,22 @@ namespace :test do
 
 
 	desc 'Create test data'
-	task :seed_solr => :environment do
+	task :seed_data => :environment do
 		WebMock.allow_net_connect!
 		
-		(self.delete_solr_test_data and self.create_solr_test_data) ? 
+		(self.class.delete_solr_test_data and self.class.create_solr_test_data) ? 
 		puts("Solr seeded succesfully!") : puts("*** Solr seeding failed! ***")
 	end
 
 	desc 'Remove test data'
-	task :unseed_solr => :environment do
+	task :unseed_data => :environment do
 		WebMock.allow_net_connect!
-		puts("#{delete_solr_test_data} items cleared!")
+		puts("#{self.class.delete_solr_test_data} items cleared!")
 	end
 
+
 end
 
-
-task :fred do
-	puts "... running fred task"
-	WebMock.allow_net_connect!
-	solr = RSolr.connect :url => "http://localhost:8181/solr"
-	res = solr.get 'select', :params => {:q => '*:*'}
-	puts res['responseHeader']['status']
-end
 
 Coveralls::RakeTask.new
 task :test_with_coveralls => [:spec, 'test:unit', 'coveralls:push']

@@ -21,6 +21,8 @@ class SolrDoc
     Solrium.each do |nice_name, solr_name|
       self.instance_variable_set("@#{nice_name.to_s.downcase}", solr_response_item[solr_name])
     end
+    # ensure all_reviewers is a valid_object
+    self.all_reviewers = [] unless self.all_reviewers 
   end
 
   def to_hash
@@ -87,11 +89,24 @@ class SolrDoc
 
 
   def date_published
-    @date_published ? @date_published.first : ""
+    if @date_published && @date_published.is_a?(Array)
+      @date_published.first
+    elsif @date_published && @date_published.is_a?(String)
+      @date_published
+    else
+      ""
+    end
   end
 
+
   def date_accepted
-    @date_accepted ? @date_accepted.first : ""
+    if @date_accepted && @date_accepted.is_a?(Array)
+      @date_accepted.first
+    elsif @date_accepted && @date_accepted.is_a?(String)
+      @date_accepted
+    else
+      ""
+    end
   end
 
   def subject
@@ -109,8 +124,15 @@ class SolrDoc
   ###########################
   def save
     res = SOLR_CONNECTION.add self.to_hash
+    res = SOLR_CONNECTION.commit if res['responseHeader']['status'] == 0
     res['responseHeader']['status'] == 0
   end
+
+  def delete
+    res = SOLR_CONNECTION.delete_by_id(self.id)
+    res = SOLR_CONNECTION.commit if res['responseHeader']['status'] == 0
+    res['responseHeader']['status'] == 0
+  end  
 
   ############################
   ##
@@ -136,22 +158,10 @@ class SolrDoc
     end
   end
 
-  def self.find_by_type(type, predicate=nil)
-    found = []
-    response = SOLR_CONNECTION.get 'select', :params => {:q => "#{predicate.to_s} desc_metadata__type_tesim:#{type}"}
-    if response['responseHeader']['status'] == 0
-      response['response']['docs'].each do |solr_hash|
-        found << SolrDoc.new( solr_hash )
-      end
-    else
-      raise "Solr error #{res['responseHeader']['status']} occured"\
-        "while looking for type '#{type}'"
-    end
-  end
 
-  def self.find_by_status(status, predicate=nil)
+  def self.find_by_attrib(attrib_name, attrib_value, predicate=nil)
     found = []
-    response = SOLR_CONNECTION.get 'select', :params => {:q => "#{predicate.to_s} MediatedSubmission_status_ssim:#{status}"}
+    response = SOLR_CONNECTION.get 'select', :params => {:q => "#{predicate.to_s} #{Solrium.lookup(attrib_name)}:#{attrib_value}"}
     if response['responseHeader']['status'] == 0
       response['response']['docs'].each do |solr_hash|
         found << SolrDoc.new( solr_hash )
@@ -160,6 +170,7 @@ class SolrDoc
       raise "Solr error #{res['responseHeader']['status']} occured"\
         "while looking for status '#{status}'"
     end
+    found
   end  
 
 end

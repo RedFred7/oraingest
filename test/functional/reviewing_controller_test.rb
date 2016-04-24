@@ -33,26 +33,31 @@ class ReviewingControllerTest < FunctionalTest
   test "it gets all unclaimed items" do
     filter = [{facet: "STATUS",predicate: "NOT",value: "Claimed"}]
     get :index, {apply_filter: filter}
-    unclaimed_item_no = SolrDoc.find_by_status(Sufia.config.claimed_status, :NOT).size
+    unclaimed_item_no = SolrDoc.find_by_attrib(:status, Sufia.config.claimed_status, :NOT).size     
     assert_equal unclaimed_item_no, assigns[:docs_found]
   end
 
-  test "an item is claimed" do
-    item_to_claim = SolrDoc.find_by_status(Sufia.config.submitted_status).first
+  test "should be able to filter all items claimed by reviewer" do
+    claimed_items = SolrDoc.find_by_attrib(:status, Sufia.config.claimed_status).size    
+    filter = [
+      {facet: "STATUS",value: "Claimed"},
+      {facet: "CURRENT_REVIEWER",value: "#{@controller.current_user}"}
+    ]
 
-    find_by_type
-
-    if claim_an_item( item_to_claim, @controller.current_user )
-      filter = [{facet: "STATUS",value: "Claimed"},{facet: "CURRENT_REVIEWER",value: "#{@controller.current_user}"}]
-
-      get :index, {apply_filter: filter}
-      assert_equal 1, assigns[:docs_found]
-
-    else
-      flunk "Failed to claim an item!"
-    end
+    get :index, {apply_filter: filter}
+    assert_equal claimed_items, assigns[:docs_found]
   end
 
+
+  test "should be able to filter all submitted items " do
+    submitted_items = SolrDoc.find_by_attrib(:status, Sufia.config.submitted_status).size
+    filter = [
+      {facet: "STATUS",value: "Submitted"}
+    ]
+
+    get :index, {apply_filter: filter}
+    assert_equal submitted_items, assigns[:docs_found]
+  end
 
   test "build query - builds default search query" do
     result = "NOT #{SolrFacets.lookup(:STATUS)}:Claimed"

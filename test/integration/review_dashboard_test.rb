@@ -17,25 +17,31 @@ class ReviewDashboardTest < CapybaraTest
     visit '/dash'
     click_link("Show all items")
     click_link("All unclaimed items")
-    assert_equal page.has_text?("#{NO_OF_TEST_DATA_ITEMS-2} Items found"), true
+    ## unclaimed items are items not claimed and not draft
+    assert_equal page.has_text?("5 Items found"), true
   end
 
 
-  test "reviewer can claim a draft item" do
+  test "reviewer can claim a submitted item" do
     visit '/dash'
-    title_to_claim = get_test_data_with_status(Sufia.config.submitted_status).first.title
+
+    submitted_item = generate_test_item(:thesis, Sufia.config.submitted_status)
+    title_to_claim = submitted_item.title
+
     fill_in('dash_search', :with => title_to_claim.gsub(/\s/, '+'))
     click_button('dash_submit')
     assert_equal page.has_text?("1 Items found"), true
     click_link('claim_item_btn')
     assert_equal page.has_selector?('span.tag.tag-claimed'), true
     assert_equal page.has_selector?('a#unclaim_item_btn'), true
+
+    remove_test_item(:thesis, submitted_item.id)
   end
 
 
-  test "reviewer cannot claim an assigned item" do
+  test "reviewer cannot claim a draft item" do
     visit '/dash'
-    title_to_claim = get_test_data_with_status(Sufia.config.assigned_status).first.title
+    title_to_claim = SolrDoc.find_by_attrib(:status, Sufia.config.draft_status).first.title
     fill_in('dash_search', :with => title_to_claim.gsub(/\s/, '+'))
     click_button('dash_submit')
     assert_equal page.has_text?("1 Items found"), true
@@ -46,8 +52,13 @@ class ReviewDashboardTest < CapybaraTest
 
   test 'reviewer can unclaim a claimed item' do
     visit '/dash'
-    click_link("Show all items")
-    click_link("All claimed by #{@user.email}")
+    title_to_claim = SolrDoc.find_by_attrib(:status, Sufia.config.claimed_status).first.title
+
+    claimed_item = generate_test_item(:thesis, Sufia.config.claimed_status)
+    title_to_unclaim = claimed_item.title
+
+    fill_in('dash_search', :with => title_to_unclaim.gsub(/\s/, '+'))
+    click_button('dash_submit')
     assert_equal page.has_text?("1 Items found"), true
     assert_equal page.has_selector?('a#unclaim_item_btn'), true
     click_link('unclaim_item_btn')

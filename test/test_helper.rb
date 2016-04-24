@@ -16,32 +16,38 @@ Minitest::Reporters.use!(
   Minitest.backtrace_filter
 )
 
-
+WebMock.allow_net_connect!
 
 class ActiveSupport::TestCase
+  include DataGenerator
+
   # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
   #
   # Note: You'll currently still have to declare fixtures explicitly in integration tests
   # -- they do not yet inherit this setting
   fixtures :all
 
+  delete_solr_test_data and create_solr_test_data
+
+  MiniTest::Unit.after_tests {delete_solr_test_data}
+
   # Add more helper methods to be used by all tests here...
 end
 
 
 class DecoratorUnitTest < ActiveSupport::TestCase
-  include DataGenerator
 
-  NO_OF_TEST_DATA_ITEMS = 6
   setup do
-    delete_solr_test_data and create_solr_test_data
-    @doc = SolrDoc.find_by_status(Sufia.config.submitted_status).first
+    @doc = SolrDoc.find_by_attrib(:status, Sufia.config.submitted_status).first    
+    ## FIXME: doc should already be a SolrDoc but, for some reason,
+    # it comes out as a Hash so need to expicitly convert it to SolrDoc
+    # for now, until I understand why this happens
+    # @doc = SolrDoc.new(doc)
     @decorated_doc = SolrDocPresenter.new(@doc)
+
+    @doc.date_published = "2014"
   end
 
-  teardown do
-    delete_solr_test_data
-  end
 end
 
 
@@ -51,16 +57,13 @@ class FunctionalTest < ActionController::TestCase
 
   Filter = Struct.new(:facet, :value, :predicate)
 
-  NO_OF_TEST_DATA_ITEMS = 6
   setup do
     sign_in users(:reviewer)
-    delete_solr_test_data and create_solr_test_data
 
   end
 
   teardown do
     sign_out users(:reviewer)
-    delete_solr_test_data
   end
 end
 
@@ -71,24 +74,20 @@ class CapybaraTest <  ActionDispatch::IntegrationTest
   Warden.test_mode!
 
   # Capybara.server_port = 3001
+  delete_solr_test_data and create_solr_test_data
 
-  NO_OF_TEST_DATA_ITEMS = 4
+  MiniTest::Unit.after_tests {delete_solr_test_data}  
 
   setup do
     # Capybara.current_driver = :rack_test
     Capybara.current_driver = :selenium
     @user = users(:dashboard)
-    delete_solr_test_data and create_solr_test_data
     login_as @user
   end
 
   teardown do
     logout
-    delete_solr_test_data
     Warden.test_reset!
   end
 
 end
-
-
-WebMock.allow_net_connect!
