@@ -140,6 +140,7 @@ class SolrDoc
   ##
   ###########################
   def self.delete_all
+  	puts "">>>>   #{SOLR_CONNECTION}"
     res = SOLR_CONNECTION.delete_by_query '*:*'
     res = SOLR_CONNECTION.commit if res['responseHeader']['status'] == 0
     res['responseHeader']['status'] == 0
