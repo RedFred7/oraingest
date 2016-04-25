@@ -11,7 +11,7 @@ development:
 
 
 test: &TEST
-  url: "http://127.0.0.1:8983/solr/#/test"
+  url: <%= "http://localhost:#{ENV['JETTY_PORT'] || 8983}/solr/test" %>  
   solr:
     hostname: localhost
     port: 8983
