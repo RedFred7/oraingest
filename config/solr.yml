@@ -11,7 +11,7 @@ travis:
 
 test: &TEST
   url: "http://127.0.0.1:8080/solr/#/test"
-  solr_home: solr
+  solr_home: travis
 
 cucumber:
   <<: *TEST
