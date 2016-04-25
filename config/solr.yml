@@ -17,7 +17,7 @@ test: &TEST
     port: 8983
     log_level: WARNING
     path: /solr/#/test  
-    solr_home: "jetty/solr/test-core"
+    solr_home: "jetty/solr"
 
 cucumber:
   <<: *TEST
