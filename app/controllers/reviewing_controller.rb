@@ -11,6 +11,13 @@ class ReviewingController < ApplicationController
   Filter = Struct.new(:facet, :value, :predicate)
   before_filter :restrict_access_to_reviewers
 
+
+  def restrict_access_to_reviewers
+    unless can? :review, :all
+      raise  CanCan::AccessDenied.new("You do not have permission to review submissions.", :review_submissions, current_user)
+    end
+  end
+
   def index
 
     @full_search = false
@@ -35,7 +42,6 @@ class ReviewingController < ApplicationController
 
 
     if params[:remove_filter]
-
       if params[:remove_filter][:predicate]
         params[:remove_filter][:predicate] = nil if params[:remove_filter][:predicate].empty?
       end
@@ -61,6 +67,7 @@ class ReviewingController < ApplicationController
     end
 
 
+    # user is doing full-text search
     if params[:search]
       @full_search = true
       session[:review_dash_filters].clear
@@ -71,13 +78,66 @@ class ReviewingController < ApplicationController
 
     end
 
+    # user is claiming/unclaiming items
+    if params[:claim]
+      usr_name = (Rails.env.production? ? current_user.full_name : current_user.email)
+
+
+      #get the solr doc we want to update
+      response = @@solr_connection.get 'select',
+        :params => {q: "id:#{params[:claim_id]}"}
+      unless response["response"]["docs"].size == 1
+        raise "Wrong number of documents to update!"
+      end
+
+      solr_item_to_update = SolrDoc.new(response["response"]["docs"].first)
+      if %w(on yes true).include? params[:claim]
+        if solr_item_to_update.transition_allowed?(Sufia.config.claimed_status)
+          solr_doc = mark_doc_as_claimed(solr_item_to_update, usr_name)
+        else
+          flash[:error] = "Not allowed to claim item #{solr_item_to_update.id}"
+          return
+        end
+      end
+
+      solr_doc = mark_doc_as_unclaimed(solr_item_to_update) if %w(off no false).include? params[:claim]
+
+      #update back to Solr
+      if  update_solr_doc( solr_doc ) == 0 # success
+        if %w(on yes true).include? params[:claim]
+          flash[:notice] = "Item #{params[:claim_id]} has been successfully claimed by #{usr_name}!."
+          get_solr_records( build_query([] << default_filter_1 << default_filter_2) )
+        end
+        if %w(off no false).include? params[:claim]
+          flash[:notice] = "Item #{params[:claim_id]} has been successfully un-claimed by #{usr_name}!."
+          get_solr_records( build_query([] << default_filter_1 << default_filter_2) )
+        end
+      else
+        flash[:error] = "Item #{params[:claim_id]}- Claim state could not be changed due to Solr update error!"
+      end
+      return
+    end
+
     full_query = params[:search] ?
       build_query(session[:review_dash_filters], " OR ")  :
       build_query(session[:review_dash_filters])
 
-    # binding.pry if params[:search]
-    response = solr_search(full_query,  params[:page] ? params[:page].to_i : 1)
+    get_solr_records(full_query)
 
+
+  end
+
+
+  private
+
+  # Gets the solr query executed and sets two instance variables:
+  # One for all found documents (@docs_list) and one for all
+  # relevant facets (@facets)
+  #
+  # @param query [?] The Solr query string
+  # @return N/A
+  def get_solr_records(query)
+    response = solr_search(query,  params[:page] ? params[:page].to_i : 1)
     @docs_found = response['response']['numFound']
 
     if @docs_found < 1
@@ -87,10 +147,11 @@ class ReviewingController < ApplicationController
       @docs_list = response['response']['docs']
     end
 
-
   end
 
 
+  # Executes the solr query
+  # @return N/A
   def solr_search(query, page = 1)
     logger.info "Solr search query: #{query}"
 
@@ -105,16 +166,60 @@ class ReviewingController < ApplicationController
   end
 
 
+  # Ensures the right solr metadata fields are created and populated
+  # in order for the document to be claimed by the current user
+  #
+  # @param solr_doc [SolrDoc] document metadata retrieved from Solr
+  # @param user [String] The current user's full name or email
+  # @return String the modified solr document
+  def mark_doc_as_claimed(solr_doc, user)
+    solr_doc.all_reviewers.push user
+    solr_doc.current_reviewer = Array.new(1, user)
+    solr_doc.status.push Sufia.config.claimed_status
+    solr_doc
+
+  end
+
+
+  # Ensures the right solr metadata fields are created and populated
+  # in order for the document to be claimed by the current user
+  #
+  # @param solr_doc [SolrDoc] document metadata retrieved from Solr
+  # @return String the modified solr document
+  def mark_doc_as_unclaimed(solr_doc)
+    previous_reviewer = solr_doc.all_reviewers[-2]
+    previous_status = solr_doc.status[-2]
+    solr_doc.all_reviewers.push previous_reviewer
+    solr_doc.current_reviewer = Array.new(1, previous_reviewer)
+    solr_doc.status.push previous_status
+    solr_doc
+  end
+
+
+  # Updates the solr document. Update is a 2-stage process, add
+  # + commit
+  #
+  # @param solr_doc [SolrDoc] Solr document to be updated
+  # @return Integer 0 if update was successful
+  # @note Solr's #add and #commit methods will raise exceptions
+  # on failure
+  def update_solr_doc(solr_doc)
+    res = @@solr_connection.add solr_doc.to_hash
+    res = @@solr_connection.commit
+    res['responseHeader']['status']
+
+  end
+
   def full_text_search( search_term )
-    binding.pry
     joined_results = []
     Solrium.each do |nice_name, solr_name|
-      qs= "#{nice_name.to_s.downcase}=#{search_term}"
+      qs = "#{nice_name.to_s.downcase}=#{search_term}"
       rs = QueryStringSearch.new(@@solr_docs, qs).results
       joined_results.concat( rs ) if rs.size > 0
     end
     joined_results
   end
+
 
   # Builds a Solr query string from a list of Filter objects
   # Each filter is appended to the query string as a conjuncture (AND)
@@ -130,10 +235,12 @@ class ReviewingController < ApplicationController
       (0...filter_list.length).step(1).each do |index|
         filter = filter_list[index]
         filter_value = filter.value.to_s.gsub(%r{\s}, '+')
-        query << "#{Solrium.lookup(filter.facet)}:#{filter_value}"
+        solr_string = "#{Solrium.lookup(filter.facet)}:#{filter_value}"
         if %w[NOT not Not].include? filter.predicate.to_s
-          query = query.prepend('NOT ')
+          solr_string = solr_string.prepend('NOT ')
         end
+
+        query << solr_string
         query << operator unless index == filter_list.length - 1
       end
     end
@@ -152,9 +259,13 @@ class ReviewingController < ApplicationController
     q_string
   end
 
-  def restrict_access_to_reviewers
-    unless can? :review, :all
-      raise  CanCan::AccessDenied.new("You do not have permission to review submissions.", :review_submissions, current_user)
+
+
+
+  def find_doc(doc_id)
+    if @docs_list
+      idx = docs_list.find_index {|doc| doc['id'] == doc_id}
+      @docs_list[idx]
     end
   end
 

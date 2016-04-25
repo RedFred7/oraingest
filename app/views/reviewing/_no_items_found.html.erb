@@ -1,5 +1,11 @@
-<h4 class="heading4">No Items retrieved for these search criteria. You can always search across the dashboard using the free-text search box:
-</h4>
+	
+<% if claiming %>
+	<h4 class="heading4">You have no claimed items pending review. Show all items or do a search, in order to claim deposits
+	</h4>
+<% else %>
+	<h4 class="heading4">No Items found. You can always search across the dashboard using the free-text search box:
+	</h4>
+<% end %>
 
 <%= link_to "   Show all items" ,  { controller: "reviewing", apply_filter: ['all']}, class: "fa fa-bookmark fa-sm" %>
 

@@ -2,21 +2,8 @@ require 'test_helper'
 
 class SolrDocTest < ActiveSupport::TestCase
 
-  SOLR_DOCS_FIXTURE_SIZE = 111
 
-  #load fixtures file containing 1 solr doc
-  file1 ||= File.open("test/fixtures/solr_doc", "rb")
-  solr_test_data = eval(file1.read)
-  file1.close
-  raise TypeError, "solr_test_data isn't a Hash" unless solr_test_data.is_a? Hash
-  @@solr_doc ||= SolrDoc.new(solr_test_data)
-
-  #load fixtures file containing 111 solr docs
-  file2 ||= File.open("test/fixtures/solr_data", "rb")
-  solr_data = eval(file2.read)
-  file2.close
-  raise TypeError, "solr_data isn't a Hash" unless solr_data.is_a? Hash
-  @@batch_solr_docs ||= solr_data['response']['docs']
+  @@solr_doc ||= SolrDoc.new(SOLR_DOC_ARTICLE)
 
 
   test "solr hash succesfully converts to SolrDoc object" do
@@ -29,7 +16,7 @@ class SolrDocTest < ActiveSupport::TestCase
 
 
   test "Status attribute set correctly" do
-    assert_equal 'Draft', @@solr_doc.status
+    assert_equal 'Submitted', @@solr_doc.status.first if (@@solr_doc.status && !@@solr_doc.status.empty?)
   end
 
   test "Title attribute set correctly" do
@@ -64,12 +51,35 @@ class SolrDocTest < ActiveSupport::TestCase
     assert_equal '10/03/2015', @@solr_doc.date_accepted
   end
 
+  
+  test "All Reviewers attribute set correctly" do
+    assert_equal ['ted@bodleian.ox.ac.uk'], @@solr_doc.all_reviewers
+  end
+
   test "Subject attribute set correctly" do
     assert_includes @@solr_doc.subject, 'Religion'
     assert_includes @@solr_doc.subject, 'Forced migration'
   end
 
-  #TODO: test "Abstract attribute set correctly" do
+  test "check if item is claimed" do
+    refute @@solr_doc.is_it_claimed?
+  end
+
+  test "check that transition to Claimed is allowed" do 
+   assert @@solr_doc.transition_allowed? Sufia.config.claimed_status
+  end
+
+  test "check that transition to Assigned is allowed" do 
+   assert @@solr_doc.transition_allowed? Sufia.config.assigned_status
+  end  
+
+  test "check that transition to Published is not allowed" do 
+   refute @@solr_doc.transition_allowed? Sufia.config.published_status
+  end  
+
+  test "check that transition to DOI is not allowed" do 
+   refute @@solr_doc.transition_allowed? Sufia.config.doi_status
+  end   
 
 
-end
+end #class
