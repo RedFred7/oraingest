@@ -22,6 +22,7 @@ module OraHydra
     config.solr = YAML.load_file('config/solr.yml')
     config.redis = YAML.load_file('config/redis.yml')
     config.doi = YAML.load_file('config/doi_credentials.yml')
+    config.fedora = YAML.load_file('config/fedora.yml')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
