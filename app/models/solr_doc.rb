@@ -8,7 +8,7 @@ class SolrDoc
   attr_reader :model
 
 
-  SOLR_CONNECTION ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url']
+  SOLR_CONNECTION ||= RSolr.connect url: Rails.application.config.solr[Rails.env]['url'] 
 
 
   # constructs a SolrItem based on a SolrResponse document.
@@ -140,6 +140,7 @@ class SolrDoc
   ##
   ###########################
   def self.delete_all
+
     res = SOLR_CONNECTION.delete_by_query '*:*'
     res = SOLR_CONNECTION.commit if res['responseHeader']['status'] == 0
     res['responseHeader']['status'] == 0
