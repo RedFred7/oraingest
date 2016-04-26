@@ -13,6 +13,7 @@ namespace :ora do
       error = Jettywrapper.wrap(jetty_params) do
          Rake::Task['spec'].invoke
          Rake::Task['test:unit'].invoke
+         Rake::Task['test:functional'].invoke
       end
       raise "test failures: #{error}" if error
 
