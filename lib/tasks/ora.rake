@@ -14,6 +14,7 @@ namespace :ora do
          Rake::Task['spec'].invoke
          Rake::Task['test:unit'].invoke
          Rake::Task['test:functional'].invoke
+         Rake::Task['test:integration'].invoke
       end
       raise "test failures: #{error}" if error
 
