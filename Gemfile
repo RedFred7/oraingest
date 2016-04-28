@@ -103,3 +103,6 @@ gem 'god'
 gem 'datacite_mds'   # gem to interface with Datacite MDS
 gem 'hashids'     # generates hash ids based on a number
 gem 'figaro'
+gem 'open4'
+gem 'POpen4'
+
