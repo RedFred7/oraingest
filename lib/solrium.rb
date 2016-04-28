@@ -2,7 +2,7 @@
 
 # This module is responsible for mapping between Solr-style field names and
 # sensible attribute names for our objects and views. Can be used to
-# quickly initialize classes, e.g. see DashboardItem
+# quickly initialize classes, e.g. see SolrDoc
 #
 
 module Solrium
@@ -67,4 +67,5 @@ module Solrium
   self.add_attr :CONTRIBUTOR, "desc_metadata__contributor_tesim"
   self.add_attr :KEYWORD, "desc_metadata__keyword_sim"
   self.add_attr :PUBLISHER, "desc_metadata__publisher_sim"
+  self.add_attr :ALL_REVIEWERS, "MediatedSubmission_all_reviewer_ids_ssim"
 end

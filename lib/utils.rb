@@ -13,3 +13,11 @@ rescue URI::BadURIError
 rescue URI::InvalidURIError
   false
 end
+
+class SolrArray < Array
+
+  def eql?(other)
+    self.id == other.id
+  end
+
+end
