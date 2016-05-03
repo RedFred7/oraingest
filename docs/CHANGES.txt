@@ -1,13 +1,17 @@
 Changelog
 =========
 
-1.7.0 - rc2 - 2015/12/22
-------------------
+1.7.o.rc3 - 2016/05/03
+----------------------
+
+
+1.7.o.rc2 - 2015/12/22
+----------------------
 
 - Fixed bug when submitting dataset 
 
-1.7.0 - rc1 - 2015/12/21
-------------------
+1.7.0.rc1 - 2015/12/21
+----------------------
 
 - Added default search filter for reviewers dash
 - Fixed global search bar functionality for reviewers dash
