@@ -27,7 +27,6 @@ class ThesesController < ApplicationController
   ThesesController.solr_search_params_logic += [:exclude_unwanted_models]
 
   skip_before_action :default_html_head
-
   rescue_from Hydra::AccessDenied, CanCan::AccessDenied do |exception|
     if exception.action != :show && exception.action != :index
       redirect_to action: 'show', alert: "You do not have sufficient privileges to modify this thesis record"

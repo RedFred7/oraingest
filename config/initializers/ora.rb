@@ -1,13 +1,21 @@
+# ***********************************************************
+# Modified By : Bhavana Ananda (Calvin Butcher)
+# Date        : 23/03/2016
+
+# Removed Databank
+# ***********************************************************
 
 Sufia.config do |config|
   
   config.contact_email = 'ora@bodleian.ox.ac.uk'
   config.from_email = 'no-reply@bodleian.ox.ac.uk'
   if Rails.env.production?
-    config.data_root_dir = '/data/oradeposit/'
+    #  /data/ora is a sym-links to /data/oradeposit to be in sync with the ORA-PUBLIC data respository
+    config.data_root_dir = '/data/ora/'
     config.cud_base_url = 'http://10.0.0.203'
   else
-    config.data_root_dir = File.expand_path('data/oradeposit/', Rails.root)
+    #  /data/ora is a sym-links to /data/oradeposit to be in sync with the ORA-PUBLIC data respository
+    config.data_root_dir = File.expand_path('data/ora/', Rails.root)
     config.cud_base_url = "http://dams-auth.bodleian.ox.ac.uk"
   end
 

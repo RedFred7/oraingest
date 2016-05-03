@@ -21,6 +21,7 @@ module OraHydra
 
     current_file_dir = (File.dirname(__FILE__))
     config.solr = YAML.load_file(File.expand_path('solr.yml', current_file_dir))
+    config.fedora = YAML.load_file(File.expand_path('fedora.yml', current_file_dir))
     config.redis = YAML.load_file(File.expand_path('redis.yml', current_file_dir))
     config.doi = YAML.load_file(File.expand_path('doi_credentials.yml', current_file_dir))
 
@@ -33,6 +34,8 @@ module OraHydra
     config.autoload_paths += %W(
       #{config.root}/lib
       #{config.root}/app/models/concerns
+      #{config.root}/app/decorators
+      #{config.root}/test/data_samples
     )
     #config.autoload_paths += %W(#{config.root}/lib/qa/authorities/)
 

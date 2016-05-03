@@ -18,7 +18,7 @@ group :assets do
   gem 'coffee-rails', '~> 4.0.0'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer', :platforms => :ruby  
+  gem 'therubyracer', :platforms => :ruby
 
 end
 
@@ -83,6 +83,7 @@ group :development do
   gem 'binding_of_caller' #Retrieve the binding of a method's caller
   gem 'travis' #for Travis-CI cli integration
   gem 'htmlbeautifier' #allows beautifying ERB files
+  gem 'm' #enables individual test runs
 end
 
 group :test do
@@ -90,10 +91,18 @@ group :test do
   gem 'mock_redis'  # Used so redis does not need to be present during tests
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
+  gem 'minitest-rails'
   gem 'minitest-reporters'
+  gem 'selenium-webdriver'
+  gem 'faker'
+  gem 'ruby-prof'
+  gem 'rails-perftest'
 end
 
 gem 'god'
 gem 'datacite_mds'   # gem to interface with Datacite MDS
 gem 'hashids'     # generates hash ids based on a number
 gem 'figaro'
+gem 'open4'
+gem 'POpen4'
+

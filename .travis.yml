@@ -11,6 +11,7 @@ before_script:
   - bundle exec rake db:setup
   - bundle exec rails g hydra:jetty
 
+
 gemfile:
   - Gemfile
 
@@ -21,4 +22,4 @@ env:
 
 script: 
   - bundle exec rake ora:travis:build
-  - bundle exec rake test:unit
+  - bundle exec rake coveralls:push

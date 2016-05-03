@@ -1,7 +1,16 @@
+# ***********************************************************
+# Modified By : Bhavana Ananda (Calvin Butcher)
+# Date        : 23/03/2016
+
+# Removed Databank
+# Regeneration of DC
+# ***********************************************************
+
 # require 'ora/data_doi'
 require 'active_support/core_ext/hash/indifferent_access'
 require 'builder'
 require 'nokogiri'
+require 'popen4'
 
 class WorkflowPublisher
 
@@ -14,6 +23,9 @@ class WorkflowPublisher
   def perform_action(current_user)
     mint_and_check_doi
     send_email(current_user) if Rails.env.production?
+    if parent_model.model_klass == 'Dataset'
+      regenerate_DC(current_user)
+    end
     publish_record(current_user)
   end
 
@@ -39,6 +51,9 @@ class WorkflowPublisher
       if parent_model.doi_requested? && !parent_model.doi_registered?
         parent_model.set_dataset_doi
       end
+      unless status
+        @parent_model.workflowMetadata.update_status(Sufia.config.failure_status, msg)
+      end
     end
   end
 
@@ -54,6 +69,30 @@ class WorkflowPublisher
     end
     parent_model.datastreams['workflowMetadata'].send_email(target_workflow_id, data, current_user, parent_model.model_klass)
   end
+
+
+  def regenerate_DC(current_user)
+    # Errors for DC regerneration are logged to '[project-directory]/log/dc_regenerator.log'
+    dc_regen_cmd = "ora_dcregenerator --pids " + @parent_model.id.to_s
+    dc_regen_cmd = dc_regen_cmd + " --host localhost:8080 --user " + Rails.application.config.fedora[Rails.env]['user']
+    dc_regen_cmd = dc_regen_cmd + " --pass  " + Rails.application.config.fedora[Rails.env]['password']
+    dc_regen_cmd = dc_regen_cmd + "  >> log/dc_regenerator.log"
+
+    # Popen - Runs the above at the shell and returns exit code and error for logging
+    status =
+    POpen4::popen4(dc_regen_cmd) do |stdout, stderr, stdin, pid|
+      stdin.close
+      puts "pid        : #{ pid }"
+      puts "stdout     : #{ stdout.read.strip }"
+      puts "stderr     : #{ stderr.read.strip }"
+      stdout.gets
+      stderr.gets
+    end
+    puts "status     : #{ status.inspect }"
+    puts "exitstatus : #{ status.exitstatus }"
+    # To Do [ 21/4/2016 ] - Show if any excetipns on the UI History with DCRegeneration status
+  end
+
 
   def publish_record(current_user)
     # Send pid and list of open datastreams to queue
@@ -118,10 +157,10 @@ class WorkflowPublisher
     return status, msg
   end
 
-  REQUIRED_ATTRIBUTES = ['identifier', 'creator', 'title', 'publisher', 'publicationYear' ].freeze
+  required_attributes = ['identifier', 'creator', 'title', 'publisher', 'publicationYear' ].freeze
   def validate_required_fields(payload)
     errors, error_msg = [], ""
-    REQUIRED_ATTRIBUTES.each do |attr|
+    required_attributes.each do |attr|
       errors << "#{attr}" if payload.with_indifferent_access[attr].try(:blank?)
     end
 
@@ -136,19 +175,30 @@ class WorkflowPublisher
     msg = []
     status = true
     open_access_content = @parent_model.list_open_access_content
+
+    # 'DC' datastream also needs to be copied into ORA-PUBLIC after DC_regeneration creates more DC elements from descMetadata in ORA-DEPOSIT
+    datastreams_to_be_copied = open_access_content + ['DC']
+
+    open_access_content_filenames = @parent_model.list_open_access_content_filenames
     number_of_files = (
       open_access_content.select { |key| key.start_with?('content') }
     ).length.to_s
-    msg << "Open access datastreams: %s." % open_access_content.join(', ')
+    msg << "Open access datastreams: %s."%open_access_content.join(', ')
 
     # Add to ora publish queue
+    # Adding open access content filenames to be pulled into RSyncQ redis queue in ORA-PUBLIC
+    # Adding open access content filenames to be pulled into RSyncQ redis queue in ORA-PUBLIC
+
     args = {
       'pid' => @parent_model.id.to_s,
-      'datastreams' => open_access_content,
+      'datastreams' => datastreams_to_be_copied,
       'model' => @parent_model.model_klass,
-      'numberOfFiles' => number_of_files
+      'numberOfFiles' => number_of_files,
+      'open_access_content_filenames' => open_access_content_filenames,
+      'rsync_yes_no' => parent_model.model_klass == 'Dataset'
     }
     Resque.redis.rpush(Sufia.config.ora_publish_queue_name, args.to_json)
+
     return status, msg
   end
 

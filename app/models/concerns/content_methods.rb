@@ -1,3 +1,11 @@
+# ***********************************************************
+# Modified By : Bhavana Ananda (Calvin Butcher)
+# Date        : 23/03/2016
+
+# Removed Databank
+# ***********************************************************
+
+require "json"
 module ContentMethods
   extend ActiveSupport::Concern
 
@@ -23,6 +31,21 @@ module ContentMethods
   def content_datastreams
     self.datastreams.keys.select { |key| key.start_with?('content') and self.datastreams[key].content != nil }
   end
+
+
+  def list_open_access_content_filenames
+    content_filenames = Array.new
+    # copy all the filenames of the content datastreams that have access rights
+    self.content_datastreams.each do |dsid|
+        unless self.list_open_access_content.exclude?(dsid)
+          if (self.datastreams[dsid].content)['dsLabel']
+            content_filenames << JSON.parse(self.datastreams[dsid].content)['dsLabel']
+          end
+        end
+    end
+    content_filenames
+  end
+
 
   def has_all_access_rights?
     status = true

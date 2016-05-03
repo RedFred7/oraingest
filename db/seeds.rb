@@ -10,8 +10,10 @@
 unless Rails.env.production?
 
   emails = [
-    'depositor@bodleian.ox.ac.uk',
-    'reviewer@bodleian.ox.ac.uk'
+    'archivist1@example.com',
+    'archivist2@example.com',
+    'dashboard@example.com',
+    'reviewer1@example.com'
   ]
   
   emails.each do |email|   
