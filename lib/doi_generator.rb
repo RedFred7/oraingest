@@ -17,7 +17,7 @@ module DoiGenerator
     raw_string = uuid.gsub("uuid:", "").gsub("-", "").slice(0, SLICE_DIGITS)
     doi = DOI_SHOULDER + ":" + hashids.encode_hex(raw_string)
     # make sure DOI not already on Datacite
-    generate unless MDS.resolve(doi).instance_of? Net::HTTPNotFound
+    generate if MDS.resolve(doi).instance_of? Net::HTTPOK
     doi
   end
 
