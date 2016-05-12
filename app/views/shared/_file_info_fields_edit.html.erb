@@ -71,7 +71,9 @@
                       <% else %>
                         <% desc = "Please use this field to let us know whether this file is part of the publication or contains important supporting documentation" %>
                       <% end %>
-                      <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Type of file" , :tipDescription => desc} %>
+
+                     <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Type of file", tip_description: desc} %>  
+
                     </div>
                   <% end %>
                   <div class="fieldset"> 
@@ -86,7 +88,10 @@
                     <% else %>
                       <% desc = "Please use this field to give us more information about this file and if it is part of the publication or contains important supporting documentation" %>
                     <% end %>
-                    <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Type of file" , :tipDescription => desc} %>
+
+                     <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Type of file", tip_description: desc} %>  
+
+
                   </div>
                   <%= f_hp.fields_for :accessRights do |f_a| %>
                     <%= render partial: 'shared/embargo/embargo_fields_edit', :locals => { :f => f_hp, :accessRights => hp.accessRights, :embargo_type => "file" } %>

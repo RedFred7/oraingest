@@ -115,7 +115,8 @@
                           (their email address and departmental affiliation should also auto-complete)."
       %>
   <% end %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Creator information" , :tipDescription => desc } %>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "citation", tip_title: "Creator information", tip_description: desc} %>   
 
 </div>
 

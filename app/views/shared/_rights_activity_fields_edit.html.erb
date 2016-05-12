@@ -10,7 +10,9 @@
     <% subject = 'article' %>
   <% end %>
   <%= f.text_field :dateCopyrighted, :required => true, :value => article.dateCopyrighted.first || Time.now.year, data: {"progress" => "documentation" } %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Copyright date" , :tipDescription => "Enter the copyright year of the #{subject}" } %>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Copyright date", tip_description: "Enter the copyright year of the #{subject}"  } %>
+
 </div>
 
 <div class="fieldset">
@@ -36,14 +38,18 @@
     </ol>
     <a href="#" class="add-field">Add another rights holder</a>
   </div>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Keywords" , :tipDescription => "Enter the rights holders (apart form authors) for this work." } %>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Keywords", tip_description: "Enter the rights holders (apart form authors) for this work."  } %>
+
 </div>
 
 <%= f.fields_for :rights do |f_r| %>
   <div class="fieldset">
     <p class="small">Rights statement (from publisher)</p>
     <%= f_r.text_area :rightsStatement, :value => article.rights[0].rightsStatement.first, data: {"progress" => "documentation"} %>
-    <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Rights statement" , :tipDescription => "Enter the rights statement as required by the publisher or other legal entity" } %>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Rights statement", tip_description: "Enter the rights statement as required by the publisher or other legal entity."  } %>
+
   </div>
 <% end %>
 

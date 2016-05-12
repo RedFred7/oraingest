@@ -24,7 +24,9 @@
       <% end %>
       <% desc = '<p>Please see the ‘Charges’ section of the <a href="http://ox.libguides.com/ora-data-charges">ORA-Data help guide</a> for full details of the cost model.</p>
         <p> If payment has already been made, please give details below, including your X5 ID if you have it. If payment has not already been made, please give details of whom we should invoice. If payment is not required (e.g. you are just creating a catalogue record about data deposited elsewhere) or you would like help with this, please let us know in the box below.</p>' %>
-      <%= render partial: '/shared/tooltip', :locals => {:tipType => "preservation" , :tipTitle => "Archive service payment" , :tipDescription => desc } %>
+
+     <%= render partial: '/shared/tooltip_base', locals: {tip_type: "preservation", tip_title: "Archive service payment", tip_description: desc} %> 
+
     </div><!-- /fieldset -->
 
     <div class="padding-side-25">

@@ -24,7 +24,6 @@
 //= require jquery.validate.additional-methods
 //
 // Required by Blacklight
-//= require blacklight/blacklight
 //
 //= require bootstrap-dropdown
 //= require bootstrap-button

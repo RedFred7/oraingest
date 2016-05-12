@@ -94,7 +94,9 @@
         <a href='http://ox.libguides.com/after_deposit'>ORA LibGuide</a>." %>
       <% tipTitle = "File availability" %>
     <% end %>
-    <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => tipTitle , :tipDescription => desc } %>
+
+    <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: tipTitle, tip_description: desc  } %>
+
   </div>
   <div class="expand-panel" id="dataset-embargo-<%= panel_id %>">
     <%= render partial: 'shared/embargo/embargo_inside_fields_edit', :locals => { :f => f, :f_a => f_a, :accessRights => accessRights,

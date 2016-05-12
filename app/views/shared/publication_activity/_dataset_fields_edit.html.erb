@@ -24,7 +24,9 @@
             <div class="fieldset">
               <p class="small reqlabel">Publisher name</p>
               <%= f_p3.text_field :name, :required => true, :value => nameVal, data: {"progress" => "citation"} %>
-              <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Publisher name" , :tipDescription => "Enter the name of the body making the data publicly available. For data produced at Oxford, this will usually be the University of Oxford." } %>
+
+             <%= render partial: '/shared/tooltip_base', locals: {tip_type: "citation", tip_title: "Publisher name", tip_description: "Enter the name of the body making the data publicly available. For data produced at Oxford, this will usually be the University of Oxford."  } %>
+
             </div>
             <!--
             <div class="fieldset">
@@ -40,7 +42,9 @@
     <div class="fieldset">
       <p class="small reqlabel">Year published</p>
       <%= f_p.text_field :datePublished, :required => true, :value => p.datePublished.first || Time.now.year, data: {"progress" => "citation" } %>
-      <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Year published" , :tipDescription => "Enter the year the data have been or will be published, i.e. made publicly available." } %>
+
+     <%= render partial: '/shared/tooltip_base', locals: {tip_type: "citation", tip_title: "Year published", tip_description: "Enter the year the data have been or will be published, i.e. made publicly available."  } %>
+
     </div>
     
     <% if !doi_registered && @files.any? %>
@@ -58,7 +62,10 @@
        <% desc = "Please select this option if you would like a <a href=\"https://www.datacite.org/\" target=\"_blank\">DOI (Digital Object Identifier)</a> registered for your dataset. <br/><br/>
           You will be notified of your DOI by the ORA review team after you have submitted your record. <br/><br/>
           You can use it to cite your data once the ORA-Data team have reviewed your deposit and published the catalogue record for your data online in ORA" %>
-        <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Register DOI" , :tipDescription => desc } %>
+
+       <%= render partial: '/shared/tooltip_base', locals: {tip_type: "citation", tip_title: "Register DOI", tip_description: desc } %>
+
+
       </div>
       <div class="small alert" id="doiNote" style="display:none; margin:15px;">
         You will be notified of your DOI by the ORA review team after you have submitted your record.
@@ -79,7 +86,10 @@
           <% else %>
             <%= f_p2.text_field :doi, :value => p2.doi.first, :id => "dataset_doi", data: {"progress" => "citation"} %>
           <% end %>
-          <%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "DOI" , :tipDescription => "What is the DOI of your dataset?" } %>
+
+       <%= render partial: '/shared/tooltip_base', locals: {tip_type: "citation", tip_title: "DOI", tip_description: "What is the DOI of your dataset?" } %>
+
+
         </div>
       <% end #fields for each document %>
     <% end #each document %>

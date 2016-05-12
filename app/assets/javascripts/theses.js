@@ -1,6 +1,8 @@
 $(document).ready(function() {
 
+     $('[data-toggle="tooltip"]').tooltip(); 
 
+ 
     $('#thesis_degreeName').change(
         function() {
             var degree_type;

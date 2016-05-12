@@ -8,12 +8,90 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require_self
- *= require ora
  *= require jquery.ui.datepicker
  */
 
 
-// @import "theses";
- @import "font-awesome-sprockets";
- @import "font-awesome";
+@import "reset";
+@import "fonts";
+
+
+.btn.btn-warning.cancel, .btn.btn-primary.start
+{
+    position: relative;
+    display: inline-block;
+    background: #4F738A;
+    border-radius: 4px;
+    padding: 10px 15px;
+    border: none;   
+}
+
+
+.label.label-warning
+{
+    position: relative;
+    display: inline-block;
+    background: #FFFFFF;
+    border-radius: 4px;
+    padding: 10px 15px;
+    border: none;   
+}
+
+
+.ora-tooltip + .tooltip > .tooltip-inner 
+{
+	background-color: #f7f5d4;
+ 	top:50%;
+    left:0;
+    margin-top:-5px;
+    border-top:5px solid transparent;
+    border-bottom:5px solid transparent;
+}
+
+.ora-tooltip + .tooltip > .tooltip-arrow 
+{ 
+	border-bottom-color:#f7f5d4; 
+}
+
+
+.discoverability + .tooltip > .tooltip-inner 
+{
+	border-right:5px solid #00CC00;	
+}
+
+.citation + .tooltip > .tooltip-inner 
+{
+	border-right:5px solid #FF9999;	
+}
+
+.funder + .tooltip > .tooltip-inner 
+{
+	border-right:5px solid #FFFF80;	
+}
+
+.documentation + .tooltip > .tooltip-inner 
+{
+	border-right:5px solid #B3D9FF;	
+}
+
+.preservation + .tooltip > .tooltip-inner 
+{
+	border-right:5px solid #FF8C1A;	
+}
+
+
+
+div.tooltip-inner {
+	font-family:"Helvetica";
+    width:850px;
+    color: black;
+}
+
+
+
+
+
+@import "bootstrap";
+@import "font-awesome-sprockets";
+@import "font-awesome";	
+@import "styles";

@@ -1,6 +1,31 @@
+
 <div class="search">
+
 	<%= form_tag '/dash', :method => :get, :class => "well form-search" do %>
-		<%= text_field_tag :search, params[:search], :class => "q span50", :placeholder => "Search Reviewer Dashboard", :size => 30, :type => "search", :id => "dash_search" %>
-		<button type="submit" class="button" id="dash_submit">Search</button>
+
+		<%= select_tag "search_filter", options_for_select([ "VISA", "MasterCard" ], params[:search_filter])   %>
+
+<div class="btn-group open">
+  <a class="btn btn-primary" href="#"><i class="fa fa-user fa-fw"></i> User</a>
+  <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#">
+    <span class="fa fa-caret-down" title="Toggle dropdown menu"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li><a href="#"><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> Edit</a></li>
+    <li><a href="#"><i class="fa fa-trash-o fa-fw" aria-hidden="true"></i> Delete</a></li>
+    <li><a href="#"><i class="fa fa-ban fa-fw" aria-hidden="true"></i> Ban</a></li>
+    <li class="divider"></li>
+    <li><a href="#"><i class="fa fa-unlock" aria-hidden="true"></i> Make admin</a></li>
+  </ul>
+</div>		
+
+		<%= text_field_tag :search_text, params[:search_text], class: "q span50", placeholder: "Search Reviewer Dashboard", size: 30, type: "search", id: "dash_search" %>
+   
+
+	     <button type="submit", id="dash_submit">
+			   <%= icon("search") %>
+		</button>
+
 	<% end %>
+
 </div>

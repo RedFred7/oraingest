@@ -39,5 +39,8 @@
     </ol>
     <a href="#" class="add-field">Add another subject</a>
   </div>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Subjects" , :tipDescription => "Select the general subjects that best describe your work." } %>
+  
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Subjects", tip_description: "Select the general subjects that best describe your work."  } %>
+
+
 </div>

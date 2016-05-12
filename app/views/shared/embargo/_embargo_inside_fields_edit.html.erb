@@ -99,7 +99,9 @@
       <div class="col col1of4 embargo-duration">&nbsp;</div>
     </div>
   <% end %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Embargo end date" , :tipDescription => "Please enter either the the precise date when the embargo should be lifted, in the form DD/MM/YYYY (e.g. ’26/06/2018), or enter the required length of embargo in years and months (e.g. ’1 year 6 months’) and select a start date." } %>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Embargo end date", tip_description: "Please enter either the the precise date when the embargo should be lifted, in the form DD/MM/YYYY (e.g. ’26/06/2018), or enter the required length of embargo in years and months (e.g. ’1 year 6 months’) and select a start date."  } %>
+
 </div>
 
 <div class="fieldset">
@@ -119,7 +121,9 @@
     <% desc = "Please specify whether you want the embargo to be lifted automatically without 
     consulting you, or whether you wish to be consulted." %>
   <% end %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "funder" , :tipTitle => "Release method" , :tipDescription => desc } %>
+
+  <%= render partial: '/shared/tooltip_base', locals: {tip_type: "funder", tip_title: "Release method", tip_description: desc  } %>
+
 </div><!-- /fieldset -->
 
 <div class="fieldset">
@@ -147,6 +151,8 @@
   <% else %>
     <% desc = "Please let us know the main reason why access to your publication needs to be restricted" %>
   <% end %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "funder" , :tipTitle => "Reason for Embargo" , :tipDescription => desc } %>
+
+  <%= render partial: '/shared/tooltip_base', locals: {tip_type: "funder", tip_title: "Reason for Embargo", tip_description: desc  } %>
+
 </div><!-- /fieldset -->
 

@@ -65,5 +65,7 @@
         <p>Do not enter the bibliography/reference list within the item.</p>" %>
    <% end %>	 
    
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Related publications and datasets (optional)" , :tipDescription => desc } %>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Related publications and datasets (optional)", tip_description: desc  } %>
+
 </div><!-- /fieldset -->

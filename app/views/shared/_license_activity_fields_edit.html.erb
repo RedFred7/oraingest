@@ -28,7 +28,9 @@
       <% desc = "If there is a specific licence you wish to apply to your thesis please select this from the list. If you choose not to give your thesis a licence the standard <a href='hhttp://ora.ox.ac.uk/information/termsOfUse'>ORA terms of use</a> will apply." %>
     <% end %>
     
-    <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation", :tipTitle => "Assign a licence", :tipDescription => desc } %>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Assign a licence", tip_description: desc } %> 
+
   </div>
 
   <div class="fieldset" style="display: none;" id="license-statement">
@@ -41,6 +43,8 @@
       <% end %>
     </label>
     <% desc = "Please enter (or paste in) the text of any bespoke licence, access terms and conditions." %>
-    <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation", :tipTitle => "Licence statement", :tipDescription => desc } %>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Licence statement", tip_description: desc } %> 
+
   </div>
 <% end %>

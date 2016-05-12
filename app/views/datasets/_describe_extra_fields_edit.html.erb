@@ -11,8 +11,9 @@
         <%= f.radio_button :medium, Sufia.config.data_medium["Analog"], :checked => (@dataset.medium[0] == Sufia.config.data_medium["Analog"]), :onchange => "toggleLocatorFieldsDisplay('analog')",  :class => "medium-analog required", data: {"category" => "documentation"} %><span></span> No
       </label>
     </fieldset>
-    <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Data medium" , :tipDescription => "Please indicate whether the data you are describing are in the form of digital files, or whether they are physical notes or specimens etc." } %>
-  </div>
+
+   <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Data medium", tip_description: "Please indicate whether the data you are describing are in the form of digital files, or whether they are physical notes or specimens etc." } %>
+
 
   <div class="expand-panel" id="dataset-format-digital">
     <h5>Digital data information</h5>
@@ -25,7 +26,9 @@
           <%= f.text_field :locator, :value=>"", :style=>"width: 50%;", :id=>"data_locator_digital",  data: {"category" => "documentation"} %>
         <% end %>
       </label>
-      <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Storage location" , :tipDescription => "<p>Please indicate where the data are located.</p> <p>If the data are not available online, please give details of whom to contact to enquire about the data.</p> <p>You could add the DOI or the url of the data location, if published on the web.</p>" } %>
+
+    <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Storage location", tip_description: "<p>Please indicate where the data are located.</p> <p>If the data are not available online, please give details of whom to contact to enquire about the data.</p> <p>You could add the DOI or the url of the data location, if published on the web.</p>" } %>
+
     </div><!-- /fieldset -->
 
     <div class="fieldset">
@@ -33,7 +36,9 @@
         <p class="small">Approximate file size of dataset</p>
         <%= f.text_field :digitalSize, :value=>@dataset.digitalSize.first, :style=>"width: 200px;", data: {"category" => "documentation"} %>
       </label>
-      <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Approximate File size" , :tipDescription => "Please estimate the total size of the dataset, in terms of file size rather than number of files, e.g. '8MB', '5GB' etc." } %>
+
+     <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Approximate File size", tip_description: "Please estimate the total size of the dataset, in terms of file size rather than number of files, e.g. '8MB', '5GB' etc." } %>
+
     </div><!-- /fieldset -->
 
     <div class="fieldset">
@@ -41,7 +46,11 @@
         <p class="small">File format</p>
         <%= f.text_field :format, :value=>@dataset.format.first, :style=>"width: 200px;", data: {"category" => "documentation"} %>
       </label>
-      <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "File format" , :tipDescription => "Please specify the file formats of the data, e.g. .doc, .gif; .mp3; .mpeg; rich text; SPSS; .xls; .xml, etc." } %>
+
+     <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "File format", tip_description: "Please specify the file formats of the data, e.g. .doc, .gif; .mp3; .mpeg; rich text; SPSS; .xls; .xml, etc." } %>
+
+
+
     </div><!-- /fieldset -->
   </div><!-- /expand-panel -->
 
@@ -56,7 +65,9 @@
           <%= f.text_field :locator, :value=>"", :style=>"width: 50%;", :id=>"data_locator_analog", data: {"category" => "documentation"} %>
         <% end %>
       </label>
-      <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Storage location" , :tipDescription => "Please indicated where the data are located. If the data are not available online please give details of whom to contact to enquire about the data." } %>
+
+     <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Storage location", tip_description: "Please indicated where the data are located. If the data are not available online please give details of whom to contact to enquire about the data." } %>
+
     </div><!-- /fieldset -->
   </div><!-- /expand-panel -->
 

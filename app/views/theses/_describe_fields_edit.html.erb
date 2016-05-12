@@ -1,26 +1,40 @@
-<div class="fieldset">
+
+  <% desc = "Please provide the title as it appears on the title page of your thesis." %>
+
+
+  <%= render partial: '/shared/tooltip_base', locals: {tip_type: "citation", tip_title: "Title", tip_description: "Please provide the title as it appears on the title page of your thesis." } %>
+
   <p class="small reqlabel">Title</p>
   <%= f.text_field :title, value: @thesis.title.first, required: true, style: 'width: 60%', data: {"progress" => "citation"} %>
-  <%= render partial: '/shared/tooltip', locals: {:tipType => "citation", :tipTitle => "Title", :tipDescription =>"Please provide the title as it appears on the title page of your thesis." } %>
 </div>
 
 <div class="fieldset">
+
+
+  <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Subtitle", tip_description: "Please provide a sub-title for your thesis." } %>
+
   <p class="small">Subtitle</p>
   <%= f.text_field :subtitle, value: @thesis.subtitle.first, style: 'width: 60%', data: {"progress" => "discoverability"} %>
-  <%= render partial: '/shared/tooltip', locals: {:tipType => "discoverability", :tipTitle => "Subtitle", :tipDescription =>"Please provide a sub-title for your thesis." } %>
+
 </div>
 
 <div class="fieldset">
+
+  <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Abstract", tip_description: "Please provide an abstract for your thesis." } %>
+
   <p class="small">Abstract</p>
   <%= f.text_area :abstract, value: @thesis.abstract.first, style: 'width: 60%', data: {"progress" => "discoverability"} %>
-  <%= render partial: '/shared/tooltip', locals: {:tipType => "discoverability", :tipTitle => "Abstract", :tipDescription =>"Please provide an abstract of your thesis." } %>
+
 </div>
 
 <% if !@thesis.medium.nil? && !@thesis.medium.empty? && !@thesis.medium.first.empty? %>
     <!-- Only display if information exists i.e. imported records -->
     <div class="fieldset">
+
+  <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Medium", tip_description: "If you would like to tell us the medium of your publication, enter it here." } %>
+
       <p class="small">Medium</p>
       <%= f.text_field :medium, value: @thesis.medium.first, data: {"progress" => "discoverability"} %>
-      <%= render partial: '/shared/tooltip', locals: {:tipType => "discoverability", :tipTitle => "Medium", :tipDescription =>"If you would like to tell us the medium of your publication, enter it here." } %>
+   %>
     </div>
 <% end %>

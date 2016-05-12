@@ -1,7 +1,9 @@
 <div class="fieldset" style="margin-bottom: 30px">
   <p class="small">Data management plan</p>
   <%= f.text_field :hasDataManagementPlan, :value=>@dataset.hasDataManagementPlan.first, :style=>'width: 50%', data: {"progress" => "preservation"} %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "preservation" , :tipTitle => "Data management plan" , :tipDescription => "Enter the web address (URL) of your research project's data management plan or, if you are including this information along with your uploaded files, please give the file name here." } %>
+
+  <%= render partial: '/shared/tooltip_base', locals: {tip_type: "preservation", tip_title: "Data management plan", tip_description: "Enter the web address (URL) of your research project's data management plan or, if you are including this information along with your uploaded files, please give the file name here." } %>
+
 </div>
 
 <% agreements = {} %>
@@ -22,7 +24,9 @@
   <div class="fieldset" style="margin-bottom: 30px">
     <p class="small">Select the agreement relevant to this dataset</p>
     <%= f.select :hasAgreement, options_for_select(agreements.invert, :selected=>article.hasAgreement.first), :style=>'width: 50%', data: {"progress" => "preservation"}, :onchange => "displayDatasetAgreement(\"#{@pid}\", this.value)" %>
-    <%= render partial: '/shared/tooltip', :locals => {:tipType => "preservation" , :tipTitle => "Dataset agreement" , :tipDescription => "Listed here are the archiving plans previously agreed either by you or your department with the Bodleian. The archiving options for the data you are about to deposit will be governed by the agreement you select." } %>
+
+    <%= render partial: '/shared/tooltip_base', locals: {tip_type: "preservation", tip_title: "Dataset agreement", tip_description: "Listed here are the archiving plans previously agreed either by you or your department with the Bodleian. The archiving options for the data you are about to deposit will be governed by the agreement you select." } %>
+
   </div>
   <% if article.hasAgreement.first %>
     <div class="padding-0">

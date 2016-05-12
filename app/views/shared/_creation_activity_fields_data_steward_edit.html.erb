@@ -90,7 +90,8 @@
             Ideally, your department or unit will have designated a data steward role for this purpose but, if not, 
             this is likely to be someone in a role such as ‘Head of X Department/Faculty’ or ‘Head of X Research Group’.
             If the person is based at Oxford, their name, email address and departmental affiliation should auto-complete as you type." %>
-  <%= render partial: '/shared/tooltip', :locals => {:tipType => "preservation" , :tipTitle => "Data steward during period of project" , :tipDescription => desc } %>
+
+    <%= render partial: '/shared/tooltip_base', locals: {tip_type: "preservation", tip_title: "Data steward during period of project", tip_description: desc } %>  
 
 </div>
 

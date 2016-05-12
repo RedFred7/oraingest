@@ -73,14 +73,18 @@
             <p class="small">Abstract or brief description of research context</p>
             <%= f.text_area :abstract, :value=>@dataset.abstract.first, :style=>'width: 60%', data: {"progress" => "documentation"} %>
             <% desc = "Use this box to enter (or paste in) an abstract of the study in which the data were generated, or provide a brief description of the context of your research." %>
-            <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Abstract" , :tipDescription => desc } %>
+
+           <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Abstract", tip_description: desc} %>
+
           </div>
  
            <div class="fieldset">
     		<p class="small">Version number</p>
     		<%= f.text_field :version, :value=>@dataset.version.first, :style=>'width: 100px', data: {"progress" => "citation"} %>
                 <% desc = "If you are depositing a specific version of your data (e.g. 'version 4'), give the version name or number here." %>
-    		<%= render partial: '/shared/tooltip', :locals => {:tipType => "citation" , :tipTitle => "Version number" , :tipDescription => desc } %>
+  
+         <%= render partial: '/shared/tooltip_base', locals: {tip_type: "citation", tip_title: "Version number", tip_description: desc} %>
+
     	  </div>
 
           <%= render partial: "shared/mads_subject_fields_edit", :locals => { :f => f, :subject => @dataset.subject } %>
@@ -103,7 +107,10 @@
             <%= f.date_field "dateCollected][start", :value=>@dataset.dateCollected[0].start.first, :style=>'display: inline; width: 100px; margin: 0; margin-right: 10px;', data: {"progress" => "discoverability"} %> to 
             <%= f.date_field "dateCollected][end", :value=>@dataset.dateCollected[0].end.first, :style=>'display: inline; width: 100px; margin: 0; margin-left: 10px;', data: {"progress" => "discoverability"} %>
             <% desc = "If applicable, enter the date or time period when you collected or produced your data, e.g. '2014' or '15/4/2005’ or  '1998 - 2010." %>
-            <%= render partial: '/shared/tooltip', :locals => {:tipType =>'discoverability', :tipTitle => 'Date collected', :tipDescription => desc } %>
+
+  
+           <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Date collected", tip_description: desc} %>  
+
           </div>
 
           <div class="fieldset">
@@ -114,7 +121,9 @@
             <%= f.text_field "temporal][start", :value=>@dataset.temporal[0].start.first, :style=>'display: inline; width: 100px; margin: 0; margin-right: 10px;', data: {"progress" => "discoverability"} %> to 
             <%= f.text_field "temporal][end", :value=>@dataset.temporal[0].end.first, :style=>'display: inline; width: 100px; margin: 0; margin-left: 10px;', data: {"progress" => "discoverability"} %>
             <% desc = "If applicable, enter the time period to which your data relates, e.g. '1956' or '20/02/1987' or '1485-1510' or '15/4/2005 - 30/9/2005' or '12-8 BC'." %>
-            <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Time period covered by the data." , :tipDescription => desc } %>
+
+           <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Time period covered by the data.", tip_description: desc} %> 
+
           </div>
 
           <div class="fieldset">
@@ -125,7 +134,9 @@
             <%= f.text_field "spatial][value", :value=>@dataset.spatial.first.value.first, :style=>'width: 50%', data: {"progress" => "discoverability"} %>
             <% desc = "If applicable, enter the geographical location to which your data relate. You may enter it as a country, place name or general area 
                (e.g. 'France'; 'New York'; 'New Forest') or as geographical co-ordinates, preferably in decimal degrees (e.g. 51.754109, -1.254085)." %>
-            <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Geographical location" , :tipDescription => desc } %>
+
+           <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Geographical location", tip_description: desc} %> 
+
           </div>
 
           <%= render partial: "shared/mads_language_fields_edit", :locals => { :f => f, :language => @dataset.language } %>

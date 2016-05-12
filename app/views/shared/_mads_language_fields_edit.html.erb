@@ -5,25 +5,34 @@
     <div class="fieldset">
       <p class="small">Language</p>
       <%= l.text_field :languageLabel, :style=>'width: 50%', :value=>language[0].languageLabel.first, :class=>"languageLabel", id: "languageLabel", data: {"progress" => "discoverability"} %>
-      <%= render partial: '/shared/tooltip', :locals => {:tipType => "discoverability" , :tipTitle => "Language" , :tipDescription => "Select the primary language of the #{@model.downcase}" } %>
+
+     <%= render partial: '/shared/tooltip_base', locals: {tip_type: "discoverability", tip_title: "Language", tip_description: "Select the primary language of the #{@model.downcase}"  } %>
+
     </div>
     <% if can? :review, :all %>
       <div class="fieldset">
         <p class="small">Language code</p>
         <%= l.text_field :languageCode, :style=>'width: 200px', :value=>language[0].languageCode.first, :class=>"languageCode", id: "languageCode", data: {"progress" => "documentation"} %>
-        <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Language code" , :tipDescription => "The code for the language from the desired authority list (e.g. eng from ISO 639-2 for English) should be filled here. In most cases this will be auto filled." } %>
+
+       <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Language code", tip_description: "The code for the language from the desired authority list (e.g. eng from ISO 639-2 for English) should be filled here. In most cases this will be auto filled."  } %>
+
+
       </div>
 
       <div class="fieldset">
         <p class="small">Language authority</p>
         <%= l.text_field :languageAuthority, :style=>'width: 300px', :value=>language[0].languageAuthority.first, :class=>"languageAuthority", id: "languageAuthority", data: {"progress" => "documentation"} %>
-        <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Language authority" , :tipDescription => "The url of the authority used (e.g. LoC home page for ISO 639-2) should be filled here. In most cases this will be auto filled." } %>
       </div>
+
+       <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Language authority", tip_description: "The url of the authority used (e.g. LoC home page for ISO 639-2) should be filled here. In most cases this will be auto filled."  } %>
+
 
       <div class="fieldset">
         <p class="small">Language scheme</p>
         <%= l.text_field :languageScheme, :style=>'width: 300px', :value=>language[0].languageScheme.first, :class=>"languageScheme", id: "languageScheme", data: {"progress" => "documentation"} %>
-        <%= render partial: '/shared/tooltip', :locals => {:tipType => "documentation" , :tipTitle => "Language scheme" , :tipDescription => "The title of the authority used (e.g. ISO 639-2) should be filled here. In most cases this will be auto filled." } %>
+
+       <%= render partial: '/shared/tooltip_base', locals: {tip_type: "documentation", tip_title: "Language scheme", tip_description: "The title of the authority used (e.g. ISO 639-2) should be filled here. In most cases this will be auto filled."  } %>
+
       </div>
     <% else %>
       <%= l.hidden_field :languageCode, :value=>language[0].languageCode.first, :class=>"languageCode", id: "languageCode" %>
